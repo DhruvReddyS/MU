@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- ── Primary SEO ── -->
+    <title>TRINETRA — See Beyond The Blackout</title>
+    <meta name="description" content="TRINETRA is a tactical offline-first mesh communication system. Share emergency alerts, safe routes, and field intelligence without internet — device to device." />
+    <meta name="keywords" content="TRINETRA, offline mesh, emergency communication, P2P, disaster response, tactical, offline chat, mesh network" />
+    <meta name="author" content="TRINETRA" />
+    <meta name="robots" content="index, follow" />
+    <meta name="application-name" content="TRINETRA" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- ── Theme ── -->
+    <meta name="theme-color" content="#c41a1a" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- ── PWA / Apple ── -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="TRINETRA" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-icon" href="/branding/trinetra-mark.png" />
+    <meta name="msapplication-TileColor" content="#050505" />
+
+    <!-- ── Favicon ── -->
+    <link rel="icon" type="image/svg+xml" href="/meshdrop-icon.svg" />
+    <link rel="icon" type="image/png" href="/branding/trinetra-mark.png" />
+    <link rel="shortcut icon" href="/branding/trinetra-mark.png" />
+
+    <!-- ── Open Graph (social sharing) ── -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:title"       content="TRINETRA — See Beyond The Blackout" />
+    <meta property="og:description" content="Tactical offline mesh communication. Emergency alerts, safe routes, and field intelligence without internet." />
+    <meta property="og:image"       content="/branding/trinetra-wordmark.png" />
+    <meta property="og:image:alt"   content="TRINETRA tactical offline mesh communication" />
+    <meta property="og:site_name"   content="TRINETRA" />
+    <meta property="og:locale"      content="en_US" />
+
+    <!-- ── Twitter / X Card ── -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="TRINETRA — See Beyond The Blackout" />
+    <meta name="twitter:description" content="Tactical offline mesh communication — no internet required." />
+    <meta name="twitter:image"       content="/branding/trinetra-wordmark.png" />
+    <meta name="twitter:image:alt"   content="TRINETRA tactical offline mesh communication" />
+
+    <!-- ── Styles ── -->
+    <link rel="stylesheet" href="/src/style.css" />
+
+  </head>
+  <body>
+    <div id="app">
+      <!-- Pre-JS loading state (replaced immediately by JS splash) -->
+      <div style="position:fixed;inset:0;background:radial-gradient(circle at 50% 34%, rgba(196,26,26,0.18) 0%, rgba(196,26,26,0.04) 24%, transparent 56%), linear-gradient(180deg, #020202 0%, #070707 48%, #040404 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;">
+        <div style="position:relative;width:140px;height:140px;display:flex;align-items:center;justify-content:center;">
+          <span style="position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(196,26,26,0.28);animation:spin 5.4s linear infinite;"></span>
+          <span style="position:absolute;inset:4px;border-radius:50%;border:1px solid rgba(255,255,255,0.07);animation:spin-rev 7s linear infinite;"></span>
+          <svg viewBox="0 0 120 120" style="width:100px;height:100px;filter:drop-shadow(0 0 18px rgba(255,40,40,0.28));animation:float 2.8s ease-in-out infinite;" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="60,7 113,100 7,100" fill="rgba(196,26,26,0.07)" stroke="#c41a1a" stroke-width="2.8" stroke-linejoin="round"/>
+            <polygon points="60,26 94,88 26,88" fill="none" stroke="rgba(196,26,26,0.4)" stroke-width="1.5" stroke-linejoin="round"/>
+            <ellipse cx="60" cy="70" rx="14" ry="10" fill="none" stroke="#c41a1a" stroke-width="1.8"/>
+            <circle cx="60" cy="70" r="5.5" fill="#c41a1a"/>
+            <circle cx="62.5" cy="67.5" r="2" fill="rgba(255,255,255,0.55)"/>
+            <line x1="30" y1="70" x2="43" y2="70" stroke="rgba(196,26,26,0.45)" stroke-width="1.2"/>
+            <line x1="77" y1="70" x2="90" y2="70" stroke="rgba(196,26,26,0.45)" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div style="font-family:'Arial Narrow','Impact',sans-serif;font-size:clamp(1.8rem,8vw,2.6rem);font-weight:900;letter-spacing:0.3em;color:#f0f0f0;text-shadow:0 0 30px rgba(196,26,26,0.25);padding-right:0.3em;">TRINETRA</div>
+        <div style="display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;border:1px solid rgba(196,26,26,0.22);background:rgba(10,10,10,0.78);color:rgba(255,255,255,0.74);font:700 11px/1 system-ui, sans-serif;letter-spacing:0.28em;text-transform:uppercase;">
+          <span style="width:7px;height:7px;border-radius:50%;background:#ff3b3b;box-shadow:0 0 10px rgba(255,59,59,0.8);animation:pulse 1.2s ease-in-out infinite;"></span>
+          Booting TRINETRA
+        </div>
+      </div>
+      <style>
+        @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+        @keyframes spin-rev{from{transform:rotate(360deg)}to{transform:rotate(0)}}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+        @keyframes pulse{0%,100%{transform:scale(1);opacity:.72}50%{transform:scale(1.2);opacity:1}}
+      </style>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TRINETRA — Architecture Diagrams</title>
+<style>
+  :root {
+    --red:    #c41a1a;
+    --red-hi: #ff4444;
+    --green:  #00e676;
+    --blue:   #3b7de8;
+    --amber:  #f0a500;
+    --purple: #af52de;
+    --teal:   #5ac8fa;
+    --bg:     #050505;
+    --bg2:    #0d0d10;
+    --bg3:    #141418;
+    --border: rgba(255,255,255,0.08);
+    --text:   #f0f0f0;
+    --muted:  #606070;
+    --font-brand: 'Arial Narrow', Impact, sans-serif;
+    --font:   -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    padding: 40px 24px 80px;
+    max-width: 960px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    text-align: center;
+    margin-bottom: 56px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid rgba(196,26,26,0.25);
+  }
+  .page-title {
+    font-family: var(--font-brand);
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 900;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #f0f0f0;
+    text-shadow: 0 0 40px rgba(196,26,26,0.28);
+    margin-bottom: 8px;
+  }
+  .page-sub { color: var(--muted); font-size: 0.9rem; letter-spacing: 0.08em; }
+  .red-line {
+    width: 60px; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--red), transparent);
+    margin: 16px auto 0;
+    border-radius: 2px;
+  }
+
+  /* ── Section ── */
+  .diagram-section { margin-bottom: 64px; }
+  .section-label {
+    font-family: var(--font-brand);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red-hi);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 22px; height: 2px;
+    background: var(--red);
+    border-radius: 1px;
+  }
+  .section-title {
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .section-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 24px;
+    max-width: 620px;
+  }
+
+  /* ── Diagram cards ── */
+  .diagram-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .diagram-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(196,26,26,0.5), transparent);
+  }
+  .diagram-inner { padding: 32px 28px; overflow-x: auto; }
+
+  /* ── SVG base ── */
+  svg { display: block; }
+  .svg-wrap { display: flex; justify-content: center; }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 28px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .legend-line {
+    width: 20px; height: 2px;
+    flex-shrink: 0;
+    border-radius: 1px;
+  }
+
+  /* ── Table-style ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .data-table th {
+    text-align: left;
+    font-family: var(--font-brand);
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .mono { font-family: 'Courier New', monospace; font-size: 0.8rem; color: #ff9f0a; }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-family: var(--font-brand);
+    letter-spacing: 0.06em;
+  }
+  .badge-red    { background: rgba(196,26,26,0.18); color: #ff6666; border: 1px solid rgba(196,26,26,0.3); }
+  .badge-green  { background: rgba(0,230,118,0.12); color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
+  .badge-blue   { background: rgba(59,125,232,0.14); color: #6fa0ff; border: 1px solid rgba(59,125,232,0.28); }
+  .badge-amber  { background: rgba(240,165,0,0.12); color: #ffcc44; border: 1px solid rgba(240,165,0,0.25); }
+  .badge-purple { background: rgba(175,82,222,0.14); color: #c97fee; border: 1px solid rgba(175,82,222,0.28); }
+  .badge-teal   { background: rgba(90,200,250,0.12); color: #7dd8ff; border: 1px solid rgba(90,200,250,0.25); }
+  .badge-muted  { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- ─── PAGE HEADER ────────────────────────────────────────────────── -->
+<div class="page-header">
+  <div class="page-title">TRINETRA</div>
+  <div class="page-sub">Architecture & System Diagrams · Visual Reference</div>
+  <div class="red-line"></div>
+</div>
+
+
+<!-- ─── TABLE OF CONTENTS ────────────────────────────────────────────── -->
+<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:48px;">
+  <div style="font-family:'Arial Narrow',Impact,sans-serif;font-size:0.6rem;font-weight:900;letter-spacing:0.18em;text-transform:uppercase;color:var(--red-hi);margin-bottom:12px;">Diagram Index</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px 20px;">
+    <div style="font-size:0.8rem;color:var(--muted);">01 · System Architecture Overview</div>
+    <div style="font-size:0.8rem;color:var(--muted);">02 · Multi-Hop Message Propagation (A→B→C)</div>
+    <div style="font-size:0.8rem;color:var(--muted);">03 · WebRTC QR Handshake Flow</div>
+    <div style="font-size:0.8rem;color:var(--muted);">04 · QR Code — Dual Transport Role</div>
+    <div style="font-size:0.8rem;color:var(--muted);">05 · Security &amp; Privacy Model</div>
+    <div style="font-size:0.8rem;color:var(--muted);">06 · Message Bundle Data Model</div>
+    <div style="font-size:0.8rem;color:var(--muted);">07 · Physical Station QR Flow</div>
+    <div style="font-size:0.8rem;color:var(--muted);">08 · Offline Capability Matrix</div>
+    <div style="font-size:0.8rem;color:var(--muted);">09 · Fragment Relay System</div>
+    <div style="font-size:0.8rem;color:var(--muted);">10 · QR Decode Pipeline (6-Strategy)</div>
+    <div style="font-size:0.8rem;color:var(--muted);">11 · Message Types Reference (7 types)</div>
+    <div style="font-size:0.8rem;color:var(--muted);">12 · Screen Feature Map (all 6 screens)</div>
+    <div style="font-size:0.8rem;color:var(--muted);">13 · BroadcastChannel Multi-Tab Mode</div>
+    <div style="font-size:0.8rem;color:var(--muted);">14 · IndexedDB Schema</div>
+    <div style="font-size:0.8rem;color:var(--muted);">15 · Message Lifecycle (Create→Relay→Expire)</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 1 — System Architecture Overview
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 01</div>
+  <div class="section-title">System Architecture Overview</div>
+  <div class="section-desc">The full stack — from the user interface down to the transport and storage layers. Every layer works with zero internet.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 840 520" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:840px;">
+
+          <!-- Background zones -->
+          <rect x="10" y="10" width="820" height="100" rx="10" fill="rgba(196,26,26,0.05)" stroke="rgba(196,26,26,0.15)" stroke-width="1"/>
+          <rect x="10" y="125" width="820" height="90" rx="10" fill="rgba(59,125,232,0.05)" stroke="rgba(59,125,232,0.15)" stroke-width="1"/>
+          <rect x="10" y="230" width="820" height="80" rx="10" fill="rgba(0,230,118,0.04)" stroke="rgba(0,230,118,0.12)" stroke-width="1"/>
+          <rect x="10" y="325" width="395" height="80" rx="10" fill="rgba(240,165,0,0.05)" stroke="rgba(240,165,0,0.15)" stroke-width="1"/>
+          <rect x="420" y="325" width="410" height="80" rx="10" fill="rgba(175,82,222,0.05)" stroke="rgba(175,82,222,0.15)" stroke-width="1"/>
+          <rect x="10" y="420" width="820" height="90" rx="10" fill="rgba(90,200,250,0.04)" stroke="rgba(90,200,250,0.12)" stroke-width="1"/>
+
+          <!-- Layer labels -->
+          <text x="24" y="32" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" letter-spacing="2" fill="rgba(196,26,26,0.7)" text-transform="uppercase">UI SCREENS</text>
+          <text x="24" y="147" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" letter-spacing="2" fill="rgba(59,125,232,0.7)">APPLICATION CORE</text>
+          <text x="24" y="252" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" letter-spacing="2" fill="rgba(0,230,118,0.7)">SYNC PROTOCOL</text>
+          <text x="24" y="347" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" letter-spacing="2" fill="rgba(240,165,0,0.7)">TRANSPORT</text>
+          <text x="434" y="347" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" letter-spacing="2" fill="rgba(175,82,222,0.7)">SECURITY</text>
+          <text x="24" y="442" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" letter-spacing="2" fill="rgba(90,200,250,0.7)">STORAGE &amp; RUNTIME</text>
+
+          <!-- ── UI Screen boxes ── -->
+          <!-- Feed -->
+          <rect x="26" y="40" width="116" height="56" rx="8" fill="#0d0d10" stroke="rgba(196,26,26,0.45)" stroke-width="1.2"/>
+          <text x="84" y="63" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#f0f0f0">FEED</text>
+          <text x="84" y="79" text-anchor="middle" font-size="9" fill="#606070">7 message types</text>
+
+          <!-- Connect -->
+          <rect x="156" y="40" width="116" height="56" rx="8" fill="#0d0d10" stroke="rgba(196,26,26,0.45)" stroke-width="1.2"/>
+          <text x="214" y="63" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#f0f0f0">CONNECT</text>
+          <text x="214" y="79" text-anchor="middle" font-size="9" fill="#606070">QR pairing / BT hints</text>
+
+          <!-- Map -->
+          <rect x="286" y="40" width="116" height="56" rx="8" fill="#0d0d10" stroke="rgba(196,26,26,0.45)" stroke-width="1.2"/>
+          <text x="344" y="63" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#f0f0f0">MAP</text>
+          <text x="344" y="79" text-anchor="middle" font-size="9" fill="#606070">Leaflet offline · routes</text>
+
+          <!-- QR Drop -->
+          <rect x="416" y="40" width="116" height="56" rx="8" fill="#0d0d10" stroke="rgba(196,26,26,0.45)" stroke-width="1.2"/>
+          <text x="474" y="63" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#f0f0f0">QR DROP</text>
+          <text x="474" y="79" text-anchor="middle" font-size="9" fill="#606070">Export · Station · Scan</text>
+
+          <!-- DM -->
+          <rect x="546" y="40" width="116" height="56" rx="8" fill="#0d0d10" stroke="rgba(196,26,26,0.45)" stroke-width="1.2"/>
+          <text x="604" y="63" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#f0f0f0">DM</text>
+          <text x="604" y="79" text-anchor="middle" font-size="9" fill="#606070">E2E encrypted chat</text>
+
+          <!-- Settings -->
+          <rect x="676" y="40" width="144" height="56" rx="8" fill="#0d0d10" stroke="rgba(196,26,26,0.45)" stroke-width="1.2"/>
+          <text x="748" y="63" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#f0f0f0">SETTINGS</text>
+          <text x="748" y="79" text-anchor="middle" font-size="9" fill="#606070">Alerts · System · Demo</text>
+
+          <!-- Arrows layer 1 → 2 -->
+          <line x1="420" y1="96" x2="420" y2="125" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="3 2"/>
+
+          <!-- ── App Core boxes ── -->
+          <rect x="26" y="155" width="180" height="46" rx="8" fill="#0d0d10" stroke="rgba(59,125,232,0.5)" stroke-width="1.2"/>
+          <text x="116" y="173" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#f0f0f0">IDENTITY</text>
+          <text x="116" y="188" text-anchor="middle" font-size="8.5" fill="#606070">Session ID · Display name</text>
+
+          <rect x="220" y="155" width="180" height="46" rx="8" fill="#0d0d10" stroke="rgba(59,125,232,0.5)" stroke-width="1.2"/>
+          <text x="310" y="173" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#f0f0f0">SCHEDULER</text>
+          <text x="310" y="188" text-anchor="middle" font-size="8.5" fill="#606070">TTL expiry · 5-min cleanup</text>
+
+          <rect x="414" y="155" width="180" height="46" rx="8" fill="#0d0d10" stroke="rgba(59,125,232,0.5)" stroke-width="1.2"/>
+          <text x="504" y="173" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#f0f0f0">QR ENGINE</text>
+          <text x="504" y="188" text-anchor="middle" font-size="8.5" fill="#606070">Encode · Decode · 6-strategy scan</text>
+
+          <rect x="608" y="155" width="212" height="46" rx="8" fill="#0d0d10" stroke="rgba(59,125,232,0.5)" stroke-width="1.2"/>
+          <text x="714" y="173" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#f0f0f0">BROADCAST CHANNEL</text>
+          <text x="714" y="188" text-anchor="middle" font-size="8.5" fill="#606070">Same-device tab discovery</text>
+
+          <!-- Arrows 2 → 3 -->
+          <line x1="420" y1="201" x2="420" y2="230" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="3 2"/>
+
+          <!-- ── Sync Protocol ── -->
+          <rect x="26" y="248" width="237" height="48" rx="8" fill="#0d0d10" stroke="rgba(0,230,118,0.4)" stroke-width="1.5"/>
+          <text x="144" y="265" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#00e676">MSG_HAVE</text>
+          <text x="144" y="280" text-anchor="middle" font-size="8.5" fill="#606070">"Here are my message IDs"</text>
+
+          <rect x="277" y="248" width="237" height="48" rx="8" fill="#0d0d10" stroke="rgba(0,230,118,0.4)" stroke-width="1.5"/>
+          <text x="395" y="265" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#00e676">MSG_REQUEST</text>
+          <text x="395" y="280" text-anchor="middle" font-size="8.5" fill="#606070">"Send me what I'm missing"</text>
+
+          <rect x="528" y="248" width="302" height="48" rx="8" fill="#0d0d10" stroke="rgba(0,230,118,0.4)" stroke-width="1.5"/>
+          <text x="679" y="265" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#00e676">MSG_BUNDLES + FANOUT</text>
+          <text x="679" y="280" text-anchor="middle" font-size="8.5" fill="#606070">"Full messages" → relay to all other peers</text>
+
+          <!-- arrows inside sync -->
+          <line x1="263" y1="272" x2="277" y2="272" stroke="#00e676" stroke-width="1.5" marker-end="url(#arr-green)"/>
+          <line x1="514" y1="272" x2="528" y2="272" stroke="#00e676" stroke-width="1.5" marker-end="url(#arr-green)"/>
+
+          <!-- Arrows 3 → 4 -->
+          <line x1="200" y1="296" x2="200" y2="325" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="3 2"/>
+          <line x1="640" y1="296" x2="640" y2="325" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="3 2"/>
+
+          <!-- ── Transport ── -->
+          <rect x="26" y="343" width="163" height="48" rx="8" fill="#0d0d10" stroke="rgba(240,165,0,0.4)" stroke-width="1.5"/>
+          <text x="107" y="360" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#f0a500">WebRTC DataChannel</text>
+          <text x="107" y="376" text-anchor="middle" font-size="8.5" fill="#606070">LAN-only · No STUN/TURN</text>
+
+          <rect x="202" y="343" width="196" height="48" rx="8" fill="#0d0d10" stroke="rgba(240,165,0,0.4)" stroke-width="1.5"/>
+          <text x="300" y="360" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#f0a500">QR Code (SDP Signaling)</text>
+          <text x="300" y="376" text-anchor="middle" font-size="8.5" fill="#606070">Offer QR → scan → Answer QR</text>
+
+          <!-- Security -->
+          <rect x="434" y="343" width="178" height="48" rx="8" fill="#0d0d10" stroke="rgba(175,82,222,0.4)" stroke-width="1.5"/>
+          <text x="523" y="360" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#c97fee">ECDH P-256</text>
+          <text x="523" y="376" text-anchor="middle" font-size="8.5" fill="#606070">Key agreement · DM encryption</text>
+
+          <rect x="626" y="343" width="204" height="48" rx="8" fill="#0d0d10" stroke="rgba(175,82,222,0.4)" stroke-width="1.5"/>
+          <text x="728" y="360" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#c97fee">AES-256-GCM</text>
+          <text x="728" y="376" text-anchor="middle" font-size="8.5" fill="#606070">E2E encrypted DM payloads</text>
+
+          <!-- Arrows 4 → 5 -->
+          <line x1="420" y1="391" x2="420" y2="420" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="3 2"/>
+
+          <!-- ── Storage ── -->
+          <rect x="26" y="438" width="230" height="58" rx="8" fill="#0d0d10" stroke="rgba(90,200,250,0.4)" stroke-width="1.5"/>
+          <text x="141" y="457" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#7dd8ff">IndexedDB v3</text>
+          <text x="141" y="471" text-anchor="middle" font-size="8.5" fill="#606070">messages · keys · rootId/revision</text>
+          <text x="141" y="484" text-anchor="middle" font-size="8" fill="rgba(96,96,112,0.7)">meshdrop-db · meshdrop-dm</text>
+
+          <rect x="270" y="438" width="200" height="58" rx="8" fill="#0d0d10" stroke="rgba(90,200,250,0.4)" stroke-width="1.5"/>
+          <text x="370" y="457" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#7dd8ff">Service Worker</text>
+          <text x="370" y="471" text-anchor="middle" font-size="8.5" fill="#606070">Workbox precache · Offline PWA</text>
+          <text x="370" y="484" text-anchor="middle" font-size="8" fill="rgba(96,96,112,0.7)">All assets cached at install</text>
+
+          <rect x="484" y="438" width="200" height="58" rx="8" fill="#0d0d10" stroke="rgba(90,200,250,0.4)" stroke-width="1.5"/>
+          <text x="584" y="457" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#7dd8ff">Web Crypto API</text>
+          <text x="584" y="471" text-anchor="middle" font-size="8.5" fill="#606070">Native browser crypto primitives</text>
+          <text x="584" y="484" text-anchor="middle" font-size="8" fill="rgba(96,96,112,0.7)">Keys in RAM only — never persisted</text>
+
+          <rect x="698" y="438" width="132" height="58" rx="8" fill="#0d0d10" stroke="rgba(90,200,250,0.4)" stroke-width="1.5"/>
+          <text x="764" y="457" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#7dd8ff">Leaflet.js</text>
+          <text x="764" y="471" text-anchor="middle" font-size="8.5" fill="#606070">Offline map engine</text>
+          <text x="764" y="484" text-anchor="middle" font-size="8" fill="rgba(96,96,112,0.7)">No tile server needed</text>
+
+          <!-- Arrowhead defs -->
+          <defs>
+            <marker id="arr-green" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#00e676"/>
+            </marker>
+          </defs>
+
+          <!-- "NO INTERNET" label -->
+          <rect x="340" y="490" width="160" height="22" rx="11" fill="rgba(196,26,26,0.15)" stroke="rgba(196,26,26,0.3)" stroke-width="1"/>
+          <text x="420" y="505" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" letter-spacing="2" fill="#ff4444">ZERO INTERNET AT ALL LAYERS</text>
+
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 2 — Multi-Hop Message Propagation (A → B → C)
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 02</div>
+  <div class="section-title">Multi-Hop Message Propagation</div>
+  <div class="section-desc">How a message travels from Device A all the way to Device C without A and C ever connecting directly. Each hop decrements the TTL and increments the hop counter.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 820 400" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:820px;">
+
+          <defs>
+            <marker id="arr-white" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 Z" fill="rgba(255,255,255,0.5)"/>
+            </marker>
+            <marker id="arr-red" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 Z" fill="#ff4444"/>
+            </marker>
+            <marker id="arr-green2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 Z" fill="#00e676"/>
+            </marker>
+          </defs>
+
+          <!-- Timeline axis -->
+          <line x1="40" y1="380" x2="780" y2="380" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <text x="40" y="395" font-size="9" fill="rgba(255,255,255,0.25)" font-family="Arial,sans-serif">t=0</text>
+          <text x="760" y="395" font-size="9" fill="rgba(255,255,255,0.25)" font-family="Arial,sans-serif">time →</text>
+
+          <!-- ── DEVICE LANES ── -->
+          <!-- Device A lane -->
+          <rect x="20" y="14" width="90" height="36" rx="8" fill="rgba(196,26,26,0.18)" stroke="rgba(196,26,26,0.5)" stroke-width="1.5"/>
+          <text x="65" y="28" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#ff4444">DEVICE A</text>
+          <text x="65" y="42" text-anchor="middle" font-size="8" fill="#606070">Origin node</text>
+          <line x1="65" y1="50" x2="65" y2="375" stroke="rgba(196,26,26,0.15)" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <!-- Device B lane -->
+          <rect x="350" y="14" width="90" height="36" rx="8" fill="rgba(59,125,232,0.16)" stroke="rgba(59,125,232,0.45)" stroke-width="1.5"/>
+          <text x="395" y="28" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#6fa0ff">DEVICE B</text>
+          <text x="395" y="42" text-anchor="middle" font-size="8" fill="#606070">Relay node</text>
+          <line x1="395" y1="50" x2="395" y2="375" stroke="rgba(59,125,232,0.15)" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <!-- Device C lane -->
+          <rect x="680" y="14" width="90" height="36" rx="8" fill="rgba(0,230,118,0.12)" stroke="rgba(0,230,118,0.4)" stroke-width="1.5"/>
+          <text x="725" y="28" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#00e676">DEVICE C</text>
+          <text x="725" y="42" text-anchor="middle" font-size="8" fill="#606070">Destination</text>
+          <line x1="725" y1="50" x2="725" y2="375" stroke="rgba(0,230,118,0.12)" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <!-- ── EVENTS ON DEVICE A ── -->
+          <!-- Step 1: Compose message -->
+          <circle cx="65" cy="90" r="8" fill="#c41a1a" stroke="#ff4444" stroke-width="1.5"/>
+          <text x="65" y="94" text-anchor="middle" font-size="8" font-weight="900" fill="white">1</text>
+          <rect x="82" y="74" width="195" height="34" rx="6" fill="rgba(196,26,26,0.12)" stroke="rgba(196,26,26,0.3)" stroke-width="1"/>
+          <text x="92" y="87" font-size="9" font-weight="700" fill="#ff6666">Compose message</text>
+          <text x="92" y="100" font-size="8" fill="#606070">ttl=80, hops=0 → IndexedDB</text>
+
+          <!-- Step 2: QR Handshake A→B -->
+          <circle cx="65" cy="155" r="8" fill="#c41a1a" stroke="#ff4444" stroke-width="1.5"/>
+          <text x="65" y="159" text-anchor="middle" font-size="8" font-weight="900" fill="white">2</text>
+          <rect x="82" y="139" width="195" height="34" rx="6" fill="rgba(240,165,0,0.1)" stroke="rgba(240,165,0,0.3)" stroke-width="1"/>
+          <text x="92" y="152" font-size="9" font-weight="700" fill="#ffcc44">Host QR (SDP Offer)</text>
+          <text x="92" y="165" font-size="8" fill="#606070">MDSDP:... displayed on screen</text>
+
+          <!-- MSG_HAVE from A to B -->
+          <circle cx="65" cy="220" r="8" fill="#c41a1a" stroke="#ff4444" stroke-width="1.5"/>
+          <text x="65" y="224" text-anchor="middle" font-size="8" font-weight="900" fill="white">3</text>
+          <line x1="73" y1="220" x2="387" y2="220" stroke="#00e676" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-green2)"/>
+          <rect x="150" y="206" width="110" height="28" rx="5" fill="rgba(0,230,118,0.1)" stroke="rgba(0,230,118,0.25)" stroke-width="1"/>
+          <text x="205" y="219" text-anchor="middle" font-size="8" font-weight="700" fill="#00e676">MSG_HAVE</text>
+          <text x="205" y="230" text-anchor="middle" font-size="7.5" fill="#606070">ids: [msg1, msg2]</text>
+
+          <!-- MSG_REQUEST from B to A -->
+          <line x1="387" y1="248" x2="73" y2="248" stroke="#6fa0ff" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-white)"/>
+          <rect x="155" y="234" width="120" height="28" rx="5" fill="rgba(59,125,232,0.1)" stroke="rgba(59,125,232,0.25)" stroke-width="1"/>
+          <text x="215" y="247" text-anchor="middle" font-size="8" font-weight="700" fill="#6fa0ff">MSG_REQUEST</text>
+          <text x="215" y="258" text-anchor="middle" font-size="7.5" fill="#606070">ids: [msg1]</text>
+
+          <!-- MSG_BUNDLES from A to B -->
+          <line x1="73" y1="276" x2="387" y2="276" stroke="#ff4444" stroke-width="2" marker-end="url(#arr-red)"/>
+          <rect x="130" y="258" width="155" height="32" rx="5" fill="rgba(196,26,26,0.15)" stroke="rgba(196,26,26,0.4)" stroke-width="1"/>
+          <text x="207" y="272" text-anchor="middle" font-size="9" font-weight="900" fill="#ff6666">MSG_BUNDLES</text>
+          <text x="207" y="284" text-anchor="middle" font-size="7.5" fill="#606070">ttl:79 hops:1 (B receives)</text>
+
+          <!-- ── EVENTS ON DEVICE B ── -->
+          <!-- B stores message -->
+          <circle cx="395" cy="310" r="8" fill="#3b7de8" stroke="#6fa0ff" stroke-width="1.5"/>
+          <text x="395" y="314" text-anchor="middle" font-size="8" font-weight="900" fill="white">4</text>
+          <rect x="413" y="294" width="220" height="34" rx="6" fill="rgba(59,125,232,0.1)" stroke="rgba(59,125,232,0.3)" stroke-width="1"/>
+          <text x="423" y="307" font-size="9" font-weight="700" fill="#6fa0ff">B saves + relays to C</text>
+          <text x="423" y="320" font-size="8" fill="#606070">Feed shows "RELAYED" badge</text>
+
+          <!-- MSG_BUNDLES B → C -->
+          <line x1="403" y1="338" x2="717" y2="338" stroke="#ff4444" stroke-width="2" marker-end="url(#arr-red)"/>
+          <rect x="490" y="320" width="165" height="32" rx="5" fill="rgba(196,26,26,0.15)" stroke="rgba(196,26,26,0.4)" stroke-width="1"/>
+          <text x="572" y="334" text-anchor="middle" font-size="9" font-weight="900" fill="#ff6666">MSG_BUNDLES</text>
+          <text x="572" y="346" text-anchor="middle" font-size="7.5" fill="#606070">ttl:78 hops:2 (C receives)</text>
+
+          <!-- C receives -->
+          <circle cx="725" cy="362" r="10" fill="rgba(0,230,118,0.25)" stroke="#00e676" stroke-width="2"/>
+          <text x="725" y="358" text-anchor="middle" font-size="8" font-weight="900" fill="#00e676">✓</text>
+          <text x="725" y="370" text-anchor="middle" font-size="7" fill="#00e676">2 HOPS</text>
+
+          <!-- ── QR Scan visual A→B ── -->
+          <rect x="210" y="135" width="70" height="52" rx="5" fill="rgba(240,165,0,0.08)" stroke="rgba(240,165,0,0.3)" stroke-width="1" stroke-dasharray="3 2"/>
+          <text x="245" y="156" text-anchor="middle" font-size="8" fill="#ffcc44">B scans</text>
+          <text x="245" y="168" text-anchor="middle" font-size="8" fill="#ffcc44">host QR</text>
+          <text x="245" y="180" text-anchor="middle" font-size="8" fill="#ffcc44">→ answer QR</text>
+
+          <!-- Connection established label -->
+          <line x1="65" y1="193" x2="395" y2="193" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="2 3"/>
+          <rect x="155" y="183" width="120" height="18" rx="5" fill="rgba(0,230,118,0.08)"/>
+          <text x="215" y="195" text-anchor="middle" font-size="8" fill="rgba(0,230,118,0.7)">DataChannel OPEN</text>
+
+        </svg>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#ff4444"></div> Device A (message origin)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#6fa0ff"></div> Device B (relay node)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#00e676"></div> Device C (destination, 2 hops)</div>
+        <div class="legend-item"><div class="legend-line" style="background:#ff4444"></div> MSG_BUNDLES (data relay)</div>
+        <div class="legend-item"><div class="legend-line" style="background:#00e676;"></div> MSG_HAVE (sync request)</div>
+        <div class="legend-item"><div class="legend-line" style="background:#6fa0ff;"></div> MSG_REQUEST (pull missing)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 3 — WebRTC QR Handshake Flow
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 03</div>
+  <div class="section-title">WebRTC QR Handshake — How Two Devices Connect</div>
+  <div class="section-desc">No server, no STUN, no TURN. The QR code IS the signaling channel. Two phones, two QR scans, one secure P2P link.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 780 340" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:780px;">
+
+          <defs>
+            <marker id="arr-a" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#ff4444"/>
+            </marker>
+            <marker id="arr-b" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#6fa0ff"/>
+            </marker>
+            <marker id="arr-ok" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#00e676"/>
+            </marker>
+          </defs>
+
+          <!-- HOST device phone shape -->
+          <rect x="30" y="10" width="100" height="36" rx="8" fill="rgba(196,26,26,0.18)" stroke="rgba(196,26,26,0.5)" stroke-width="1.5"/>
+          <text x="80" y="24" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#ff4444">HOST</text>
+          <text x="80" y="38" text-anchor="middle" font-size="8.5" fill="#606070">Device A</text>
+
+          <!-- JOINER device phone shape -->
+          <rect x="650" y="10" width="100" height="36" rx="8" fill="rgba(59,125,232,0.16)" stroke="rgba(59,125,232,0.45)" stroke-width="1.5"/>
+          <text x="700" y="24" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#6fa0ff">JOINER</text>
+          <text x="700" y="38" text-anchor="middle" font-size="8.5" fill="#606070">Device B</text>
+
+          <!-- Step lines HOST -->
+          <line x1="80" y1="46" x2="80" y2="320" stroke="rgba(196,26,26,0.15)" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="700" y1="46" x2="700" y2="320" stroke="rgba(59,125,232,0.15)" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <!-- STEP 1: createHostOffer -->
+          <circle cx="80" cy="78" r="6" fill="#c41a1a"/>
+          <rect x="96" y="66" width="195" height="28" rx="6" fill="rgba(196,26,26,0.1)" stroke="rgba(196,26,26,0.25)" stroke-width="1"/>
+          <text x="104" y="79" font-size="8.5" font-weight="700" fill="#ff6666">1. createHostOffer()</text>
+          <text x="104" y="90" font-size="8" fill="#606070">SDP offer generated + ICE gathered</text>
+
+          <!-- STEP 2: QR display -->
+          <circle cx="80" cy="120" r="6" fill="#c41a1a"/>
+          <rect x="96" y="108" width="195" height="28" rx="6" fill="rgba(240,165,0,0.1)" stroke="rgba(240,165,0,0.25)" stroke-width="1"/>
+          <text x="104" y="121" font-size="8.5" font-weight="700" fill="#ffcc44">2. sdpToQR(offerJSON)</text>
+          <text x="104" y="132" font-size="8" fill="#606070">MDSDP: + LZ-compress → QR canvas</text>
+
+          <!-- QR icon -->
+          <rect x="305" y="60" width="60" height="60" rx="6" fill="rgba(196,26,26,0.12)" stroke="rgba(196,26,26,0.4)" stroke-width="1.5"/>
+          <!-- mini QR pattern -->
+          <rect x="313" y="68" width="18" height="18" rx="2" fill="rgba(196,26,26,0.5)"/>
+          <rect x="336" y="68" width="6" height="6" fill="rgba(196,26,26,0.3)"/>
+          <rect x="347" y="68" width="12" height="6" fill="rgba(196,26,26,0.3)"/>
+          <rect x="313" y="91" width="12" height="6" fill="rgba(196,26,26,0.3)"/>
+          <rect x="330" y="84" width="18" height="18" rx="2" fill="rgba(196,26,26,0.5)"/>
+          <rect x="313" y="100" width="6" height="12" fill="rgba(196,26,26,0.3)"/>
+          <text x="335" y="135" text-anchor="middle" font-size="8" fill="#ff6666">OFFER QR</text>
+          <text x="335" y="146" text-anchor="middle" font-size="7.5" fill="#606070">shown on Host screen</text>
+
+          <!-- Arrow A → QR -->
+          <line x1="86" y1="120" x2="302" y2="100" stroke="rgba(196,26,26,0.4)" stroke-width="1.2" stroke-dasharray="3 2" marker-end="url(#arr-a)"/>
+
+          <!-- Arrow QR → B (scan) -->
+          <line x1="368" y1="100" x2="694" y2="140" stroke="rgba(59,125,232,0.4)" stroke-width="1.2" stroke-dasharray="3 2" marker-end="url(#arr-b)"/>
+          <rect x="420" y="92" width="80" height="20" rx="4" fill="rgba(59,125,232,0.1)"/>
+          <text x="460" y="105" text-anchor="middle" font-size="8" fill="#6fa0ff">B scans QR 📷</text>
+
+          <!-- STEP 3: B creates answer -->
+          <circle cx="700" cy="155" r="6" fill="#3b7de8"/>
+          <rect x="505" y="143" width="195" height="28" rx="6" fill="rgba(59,125,232,0.1)" stroke="rgba(59,125,232,0.25)" stroke-width="1"/>
+          <text x="513" y="156" font-size="8.5" font-weight="700" fill="#6fa0ff">3. createJoinerAnswer()</text>
+          <text x="513" y="167" font-size="8" fill="#606070">Decodes offer, generates SDP answer</text>
+
+          <!-- STEP 4: Answer QR -->
+          <circle cx="700" cy="197" r="6" fill="#3b7de8"/>
+          <rect x="505" y="185" width="195" height="28" rx="6" fill="rgba(240,165,0,0.1)" stroke="rgba(240,165,0,0.25)" stroke-width="1"/>
+          <text x="513" y="198" font-size="8.5" font-weight="700" fill="#ffcc44">4. sdpToQR(answerJSON)</text>
+          <text x="513" y="209" font-size="8" fill="#606070">B displays answer QR on screen</text>
+
+          <!-- Answer QR icon -->
+          <rect x="413" y="175" width="60" height="60" rx="6" fill="rgba(59,125,232,0.12)" stroke="rgba(59,125,232,0.4)" stroke-width="1.5"/>
+          <rect x="421" y="183" width="18" height="18" rx="2" fill="rgba(59,125,232,0.5)"/>
+          <rect x="444" y="183" width="6" height="6" fill="rgba(59,125,232,0.3)"/>
+          <rect x="455" y="183" width="8" height="6" fill="rgba(59,125,232,0.3)"/>
+          <rect x="421" y="205" width="8" height="6" fill="rgba(59,125,232,0.3)"/>
+          <rect x="434" y="198" width="18" height="18" rx="2" fill="rgba(59,125,232,0.5)"/>
+          <text x="443" y="247" text-anchor="middle" font-size="8" fill="#6fa0ff">ANSWER QR</text>
+          <text x="443" y="258" text-anchor="middle" font-size="7.5" fill="#606070">shown on Joiner screen</text>
+
+          <!-- Arrow B → answer QR -->
+          <line x1="694" y1="197" x2="476" y2="210" stroke="rgba(59,125,232,0.4)" stroke-width="1.2" stroke-dasharray="3 2" marker-end="url(#arr-b)"/>
+
+          <!-- Arrow answer QR → A (scan) -->
+          <line x1="413" y1="210" x2="86" y2="240" stroke="rgba(196,26,26,0.4)" stroke-width="1.2" stroke-dasharray="3 2" marker-end="url(#arr-a)"/>
+          <rect x="190" y="228" width="80" height="20" rx="4" fill="rgba(196,26,26,0.1)"/>
+          <text x="230" y="241" text-anchor="middle" font-size="8" fill="#ff6666">A scans QR 📷</text>
+
+          <!-- STEP 5: A accepts -->
+          <circle cx="80" cy="255" r="6" fill="#c41a1a"/>
+          <rect x="96" y="243" width="195" height="28" rx="6" fill="rgba(196,26,26,0.1)" stroke="rgba(196,26,26,0.25)" stroke-width="1"/>
+          <text x="104" y="256" font-size="8.5" font-weight="700" fill="#ff6666">5. acceptJoinerAnswer()</text>
+          <text x="104" y="267" font-size="8" fill="#606070">ICE connection negotiated</text>
+
+          <!-- STEP 6: Connection open -->
+          <rect x="200" y="287" width="378" height="34" rx="8" fill="rgba(0,230,118,0.1)" stroke="rgba(0,230,118,0.35)" stroke-width="1.5"/>
+          <text x="389" y="302" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#00e676">✓ WebRTC DataChannel OPEN</text>
+          <text x="389" y="315" text-anchor="middle" font-size="8.5" fill="#606070">LAN-only · No server touched at any point · Encrypted P2P link active</text>
+          <line x1="80" y1="283" x2="200" y2="295" stroke="rgba(0,230,118,0.3)" stroke-width="1" stroke-dasharray="3 2" marker-end="url(#arr-ok)"/>
+          <line x1="700" y1="283" x2="578" y2="295" stroke="rgba(0,230,118,0.3)" stroke-width="1" stroke-dasharray="3 2" marker-end="url(#arr-ok)"/>
+
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 4 — QR Dual Transport
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 04</div>
+  <div class="section-title">QR Code — Dual Transport Role</div>
+  <div class="section-desc">TRINETRA uses QR codes for two completely different purposes: real-time device pairing and physical information drops on walls.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 760 260" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:760px;">
+
+          <!-- Left column: SDP transport -->
+          <rect x="20" y="10" width="340" height="240" rx="12" fill="rgba(240,165,0,0.05)" stroke="rgba(240,165,0,0.25)" stroke-width="1.5"/>
+          <text x="190" y="36" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="12" font-weight="900" letter-spacing="1" fill="#ffcc44">MODE 1 — SIGNALING</text>
+          <text x="190" y="50" text-anchor="middle" font-size="9" fill="#606070">WebRTC SDP exchange · Live connection setup</text>
+
+          <rect x="80" y="64" width="220" height="58" rx="8" fill="rgba(240,165,0,0.1)" stroke="rgba(240,165,0,0.3)" stroke-width="1"/>
+          <text x="190" y="82" text-anchor="middle" font-size="9" font-weight="700" fill="#ffcc44">Prefix:  MDSDP:</text>
+          <text x="190" y="96" text-anchor="middle" font-size="8.5" fill="#f0f0f0">LZ-string compressed SDP JSON</text>
+          <text x="190" y="110" text-anchor="middle" font-size="8" fill="#606070">ICE candidates · DTLS fingerprint · media desc</text>
+
+          <text x="190" y="140" text-anchor="middle" font-size="8.5" fill="#606070">Contents</text>
+          <rect x="50" y="150" width="140" height="24" rx="5" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="120" y="166" text-anchor="middle" font-size="8" fill="#f0f0f0">SDP Offer (Host → Joiner)</text>
+          <rect x="200" y="150" width="140" height="24" rx="5" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="270" y="166" text-anchor="middle" font-size="8" fill="#f0f0f0">SDP Answer (Joiner → Host)</text>
+
+          <text x="190" y="200" text-anchor="middle" font-size="8.5" fill="#606070">Used for:</text>
+          <text x="190" y="215" text-anchor="middle" font-size="8.5" fill="#ffcc44">Device pairing · Real-time link setup</text>
+          <text x="190" y="228" text-anchor="middle" font-size="8" fill="#606070">Ephemeral — not saved anywhere</text>
+
+          <!-- Right column: Bundle transport -->
+          <rect x="400" y="10" width="340" height="240" rx="12" fill="rgba(196,26,26,0.05)" stroke="rgba(196,26,26,0.25)" stroke-width="1.5"/>
+          <text x="570" y="36" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="12" font-weight="900" letter-spacing="1" fill="#ff6666">MODE 2 — DATA DROPS</text>
+          <text x="570" y="50" text-anchor="middle" font-size="9" fill="#606070">Message bundles · Physical station QR</text>
+
+          <rect x="460" y="64" width="220" height="70" rx="8" fill="rgba(196,26,26,0.1)" stroke="rgba(196,26,26,0.3)" stroke-width="1"/>
+          <text x="570" y="82" text-anchor="middle" font-size="9" font-weight="700" fill="#ff6666">Single:  MD:  |  Multi-part:  MDm:</text>
+          <text x="570" y="96" text-anchor="middle" font-size="8.5" fill="#f0f0f0">LZ-string compressed JSON bundle array</text>
+          <text x="570" y="110" text-anchor="middle" font-size="8" fill="#606070">Max 200 bytes/QR → v9 (53×53) → easy phone scan</text>
+          <text x="570" y="123" text-anchor="middle" font-size="8" fill="#606070">Auto-split into MDm:1/3, MDm:2/3... for large sets</text>
+
+          <text x="570" y="150" text-anchor="middle" font-size="8.5" fill="#606070">Use cases</text>
+          <rect x="426" y="158" width="130" height="24" rx="5" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="491" y="174" text-anchor="middle" font-size="8" fill="#f0f0f0">Export · Peer-to-peer share</text>
+          <rect x="570" y="158" width="148" height="24" rx="5" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="644" y="174" text-anchor="middle" font-size="8" fill="#f0f0f0">Station QR · Wall drop (420px)</text>
+
+          <text x="570" y="205" text-anchor="middle" font-size="8.5" fill="#606070">Used for:</text>
+          <text x="570" y="219" text-anchor="middle" font-size="8.5" fill="#ff6666">Physical persistence · No-connection share</text>
+          <text x="570" y="232" text-anchor="middle" font-size="8" fill="#606070">Saved as PNG · Printable · Postable on walls</text>
+
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 5 — Security Model
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 05</div>
+  <div class="section-title">Security & Privacy Model</div>
+  <div class="section-desc">Every layer designed so that device seizure, network monitoring, and node compromise reveal the minimum possible information.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 800 320" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:800px;">
+
+          <defs>
+            <marker id="arr-purple" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#c97fee"/>
+            </marker>
+          </defs>
+
+          <!-- ECDH Key Exchange -->
+          <rect x="14" y="10" width="370" height="170" rx="12" fill="rgba(175,82,222,0.05)" stroke="rgba(175,82,222,0.22)" stroke-width="1.5"/>
+          <text x="199" y="32" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" letter-spacing="1" fill="#c97fee">ECDH KEY EXCHANGE + AES DM ENCRYPTION</text>
+
+          <rect x="30" y="48" width="148" height="30" rx="6" fill="rgba(196,26,26,0.1)" stroke="rgba(196,26,26,0.3)" stroke-width="1"/>
+          <text x="104" y="63" text-anchor="middle" font-size="8.5" fill="#ff6666">Device A</text>
+          <text x="104" y="74" text-anchor="middle" font-size="7.5" fill="#606070">ECDH P-256 keypair (RAM)</text>
+
+          <rect x="218" y="48" width="148" height="30" rx="6" fill="rgba(59,125,232,0.1)" stroke="rgba(59,125,232,0.3)" stroke-width="1"/>
+          <text x="292" y="63" text-anchor="middle" font-size="8.5" fill="#6fa0ff">Device B</text>
+          <text x="292" y="74" text-anchor="middle" font-size="7.5" fill="#606070">ECDH P-256 keypair (RAM)</text>
+
+          <!-- Key exchange arrows -->
+          <line x1="178" y1="63" x2="218" y2="63" stroke="#c97fee" stroke-width="1.2" stroke-dasharray="3 2" marker-end="url(#arr-purple)"/>
+          <text x="198" y="58" text-anchor="middle" font-size="7.5" fill="#c97fee">pub key A</text>
+          <line x1="218" y1="74" x2="178" y2="74" stroke="#c97fee" stroke-width="1.2" stroke-dasharray="3 2" marker-end="url(#arr-purple)"/>
+          <text x="198" y="83" text-anchor="middle" font-size="7.5" fill="#c97fee">pub key B</text>
+
+          <!-- Shared secret -->
+          <rect x="130" y="96" width="136" height="22" rx="5" fill="rgba(175,82,222,0.15)" stroke="rgba(175,82,222,0.3)" stroke-width="1"/>
+          <text x="198" y="111" text-anchor="middle" font-size="8" fill="#c97fee">ECDH → shared secret</text>
+
+          <!-- Encryption -->
+          <rect x="80" y="130" width="108" height="36" rx="6" fill="rgba(175,82,222,0.1)" stroke="rgba(175,82,222,0.25)" stroke-width="1"/>
+          <text x="134" y="144" text-anchor="middle" font-size="8.5" fill="#f0f0f0">AES-256-GCM</text>
+          <text x="134" y="156" text-anchor="middle" font-size="7.5" fill="#606070">encrypt plaintext</text>
+          <text x="134" y="167" text-anchor="middle" font-size="7.5" fill="#606070">with random IV</text>
+
+          <line x1="188" y1="148" x2="228" y2="148" stroke="rgba(175,82,222,0.4)" stroke-width="1.2" stroke-dasharray="3 2" marker-end="url(#arr-purple)"/>
+          <rect x="228" y="130" width="118" height="36" rx="6" fill="rgba(0,230,118,0.08)" stroke="rgba(0,230,118,0.25)" stroke-width="1"/>
+          <text x="287" y="144" text-anchor="middle" font-size="8.5" fill="#00e676">AES-256-GCM</text>
+          <text x="287" y="156" text-anchor="middle" font-size="7.5" fill="#606070">decrypt with</text>
+          <text x="287" y="167" text-anchor="middle" font-size="7.5" fill="#606070">shared secret</text>
+
+          <rect x="80" y="172" width="266" height="3" rx="1" fill="rgba(0,230,118,0.2)"/>
+          <text x="199" y="183" text-anchor="middle" font-size="7.5" fill="rgba(0,230,118,0.7)">Keys exist in RAM only — page reload destroys them permanently</text>
+
+          <!-- Identity model -->
+          <rect x="400" y="10" width="386" height="80" rx="12" fill="rgba(90,200,250,0.05)" stroke="rgba(90,200,250,0.2)" stroke-width="1.5"/>
+          <text x="593" y="30" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" letter-spacing="1" fill="#7dd8ff">SESSION-ONLY IDENTITY</text>
+          <text x="593" y="46" text-anchor="middle" font-size="8.5" fill="#606070">New random 8-char ID every page load · No username · No account · No persistence</text>
+          <rect x="420" y="54" width="166" height="24" rx="5" fill="rgba(90,200,250,0.1)" stroke="rgba(90,200,250,0.25)" stroke-width="1"/>
+          <text x="503" y="70" text-anchor="middle" font-size="8" fill="#7dd8ff">getDeviceShortId() → random</text>
+          <rect x="600" y="54" width="166" height="24" rx="5" fill="rgba(90,200,250,0.1)" stroke="rgba(90,200,250,0.25)" stroke-width="1"/>
+          <text x="683" y="70" text-anchor="middle" font-size="8" fill="#7dd8ff">getDisplayName() → "Node XXXX"</text>
+
+          <!-- TTL / Expiry -->
+          <rect x="400" y="104" width="386" height="76" rx="12" fill="rgba(240,165,0,0.05)" stroke="rgba(240,165,0,0.2)" stroke-width="1.5"/>
+          <text x="593" y="124" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" letter-spacing="1" fill="#ffcc44">TTL + EXPIRY — DATA SELF-DESTRUCTS</text>
+          <text x="593" y="140" text-anchor="middle" font-size="8.5" fill="#606070">Every message has expiresAt (absolute timestamp) and ttl (hop counter)</text>
+          <rect x="416" y="150" width="166" height="22" rx="5" fill="rgba(240,165,0,0.1)" stroke="rgba(240,165,0,0.25)" stroke-width="1"/>
+          <text x="499" y="165" text-anchor="middle" font-size="8" fill="#ffcc44">Scheduler: deleteExpired() every 5min</text>
+          <rect x="596" y="150" width="166" height="22" rx="5" fill="rgba(240,165,0,0.1)" stroke="rgba(240,165,0,0.25)" stroke-width="1"/>
+          <text x="679" y="165" text-anchor="middle" font-size="8" fill="#ffcc44">Relay rejects: ttl=0 or expiresAt past</text>
+
+          <!-- Emergency Wipe -->
+          <rect x="400" y="194" width="386" height="76" rx="12" fill="rgba(255,59,59,0.05)" stroke="rgba(255,59,59,0.2)" stroke-width="1.5"/>
+          <text x="593" y="214" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" letter-spacing="1" fill="#ff4444">EMERGENCY WIPE — 5 TAPS ON LOGO</text>
+          <text x="593" y="230" text-anchor="middle" font-size="8.5" fill="#606070">Destroys all data in under 2 seconds · Cannot be undone</text>
+          <rect x="416" y="242" width="100" height="20" rx="4" fill="rgba(255,59,59,0.12)" stroke="rgba(255,59,59,0.25)" stroke-width="1"/>
+          <text x="466" y="256" text-anchor="middle" font-size="7.5" fill="#ff6666">localStorage.clear()</text>
+          <rect x="524" y="242" width="108" height="20" rx="4" fill="rgba(255,59,59,0.12)" stroke="rgba(255,59,59,0.25)" stroke-width="1"/>
+          <text x="578" y="256" text-anchor="middle" font-size="7.5" fill="#ff6666">indexedDB.delete()</text>
+          <rect x="640" y="242" width="130" height="20" rx="4" fill="rgba(255,59,59,0.12)" stroke="rgba(255,59,59,0.25)" stroke-width="1"/>
+          <text x="705" y="256" text-anchor="middle" font-size="7.5" fill="#ff6666">caches.delete() + reload</text>
+
+          <!-- Seizure table -->
+          <rect x="14" y="196" width="370" height="110" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+          <text x="199" y="216" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" letter-spacing="1" fill="#f0f0f0">IF DEVICE IS SEIZED — WHAT'S EXPOSED?</text>
+          <line x1="14" y1="222" x2="384" y2="222" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <text x="30" y="237" font-size="8.5" fill="#606070">Private keys (DM)</text>
+          <text x="200" y="237" text-anchor="start" font-size="8.5" fill="#00e676">✓ None — RAM only, destroyed on reload</text>
+          <text x="30" y="253" font-size="8.5" fill="#606070">User identity</text>
+          <text x="200" y="253" text-anchor="start" font-size="8.5" fill="#00e676">✓ None — session-only random ID</text>
+          <text x="30" y="269" font-size="8.5" fill="#606070">Network peers</text>
+          <text x="200" y="269" text-anchor="start" font-size="8.5" fill="#00e676">✓ None stored — connection list is in RAM</text>
+          <text x="30" y="285" font-size="8.5" fill="#606070">Message content</text>
+          <text x="200" y="285" text-anchor="start" font-size="8.5" fill="#ffcc44">⚠ Local messages (approaching expiry)</text>
+          <text x="30" y="301" font-size="8.5" fill="#606070">Message origin</text>
+          <text x="200" y="301" text-anchor="start" font-size="8.5" fill="#00e676">✓ None — no sender ID in bundles</text>
+
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 6 — Message Bundle Data Model
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 06</div>
+  <div class="section-title">Message Bundle — Data Model</div>
+  <div class="section-desc">Every piece of information in TRINETRA is a bundle. These fields govern its identity, propagation, expiry, security, and geographic context.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Purpose</th>
+            <th>Layer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">id</td><td>UUID v4</td><td>Unique identifier for this specific version of the message</td><td><span class="badge badge-blue">Identity</span></td></tr>
+          <tr><td class="mono">rootId</td><td>UUID v4</td><td>Canonical ID shared across all revisions of the same message</td><td><span class="badge badge-blue">Identity</span></td></tr>
+          <tr><td class="mono">revision</td><td>Number ≥ 1</td><td>Version counter — higher revision supersedes lower for same rootId</td><td><span class="badge badge-blue">Identity</span></td></tr>
+          <tr><td class="mono">replaces</td><td>UUID | null</td><td>ID of the previous revision this message supersedes</td><td><span class="badge badge-blue">Identity</span></td></tr>
+          <tr><td class="mono">type</td><td>enum</td><td>emergency · alert · safe-route · medical · shelter · resource · info</td><td><span class="badge badge-red">Content</span></td></tr>
+          <tr><td class="mono">priority</td><td>0–100</td><td>Propagation priority — higher = synced first in MSG_HAVE sets</td><td><span class="badge badge-amber">Relay</span></td></tr>
+          <tr><td class="mono">title</td><td>string ≤80</td><td>Primary message headline shown in feed and popups</td><td><span class="badge badge-red">Content</span></td></tr>
+          <tr><td class="mono">body</td><td>string ≤500</td><td>Full message body (only present when bodyState='full')</td><td><span class="badge badge-red">Content</span></td></tr>
+          <tr><td class="mono">bodyPreview</td><td>string ≤160</td><td>Short excerpt safe to relay without the full body</td><td><span class="badge badge-amber">Relay</span></td></tr>
+          <tr><td class="mono">bodyState</td><td>'full'|'partial'</td><td>Indicates if this device has the complete body or a relay fragment</td><td><span class="badge badge-amber">Relay</span></td></tr>
+          <tr><td class="mono">fragments</td><td>string[]</td><td>Body chunks for fragment-based relay over constrained bandwidth</td><td><span class="badge badge-amber">Relay</span></td></tr>
+          <tr><td class="mono">fragmentCount</td><td>Number</td><td>Total expected fragments — used to detect when body is complete</td><td><span class="badge badge-amber">Relay</span></td></tr>
+          <tr><td class="mono">createdAt</td><td>unix ms</td><td>Absolute creation timestamp — used to compute age + relay ordering</td><td><span class="badge badge-muted">Time</span></td></tr>
+          <tr><td class="mono">expiresAt</td><td>unix ms</td><td>Absolute expiry — message deleted from IndexedDB after this time</td><td><span class="badge badge-muted">Time</span></td></tr>
+          <tr><td class="mono">ttl</td><td>Number 0–100</td><td>Hops remaining — decremented on every relay, discard when 0</td><td><span class="badge badge-green">Mesh</span></td></tr>
+          <tr><td class="mono">hops</td><td>Number ≥ 0</td><td>Relay depth counter — incremented on every relay. Shown in Feed.</td><td><span class="badge badge-green">Mesh</span></td></tr>
+          <tr><td class="mono">lat / lng</td><td>float | null</td><td>GPS coordinates — used to plot pin on offline map</td><td><span class="badge badge-purple">Geo</span></td></tr>
+          <tr><td class="mono">waypoints</td><td>[[lat,lng]]</td><td>Ordered coordinate array for safe-route polyline rendering on map</td><td><span class="badge badge-purple">Geo</span></td></tr>
+          <tr><td class="mono">localSessionOwned</td><td>boolean</td><td>True only if this device created it — enables Update button in feed</td><td><span class="badge badge-teal">UX</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="legend" style="margin-top:20px;">
+        <div class="legend-item"><span class="badge badge-blue">Identity</span> Versioning & deduplication</div>
+        <div class="legend-item"><span class="badge badge-red">Content</span> User-facing information</div>
+        <div class="legend-item"><span class="badge badge-amber">Relay</span> Bandwidth-efficient propagation</div>
+        <div class="legend-item"><span class="badge badge-green">Mesh</span> Multi-hop control</div>
+        <div class="legend-item"><span class="badge badge-purple">Geo</span> Map & route rendering</div>
+        <div class="legend-item"><span class="badge badge-muted">Time</span> Expiry & ordering</div>
+        <div class="legend-item"><span class="badge badge-teal">UX</span> UI behaviour flags</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 7 — Physical Station QR Flow
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 07</div>
+  <div class="section-title">Physical Station QR — Persistent Information Node</div>
+  <div class="section-desc">A QR code posted on a wall that anyone can scan to receive bundled messages — no active connection needed. The wall becomes a mesh node.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 760 220" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:760px;">
+
+          <defs>
+            <marker id="arr-w" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(255,255,255,0.4)"/>
+            </marker>
+            <marker id="arr-r2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#ff4444"/>
+            </marker>
+            <marker id="arr-g2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#00e676"/>
+            </marker>
+          </defs>
+
+          <!-- Step 1: Select messages -->
+          <rect x="10" y="60" width="120" height="80" rx="10" fill="rgba(196,26,26,0.1)" stroke="rgba(196,26,26,0.35)" stroke-width="1.5"/>
+          <text x="70" y="85" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#ff6666">QR DROP</text>
+          <text x="70" y="99" text-anchor="middle" font-size="8" fill="#ff6666">STATION TAB</text>
+          <text x="70" y="114" text-anchor="middle" font-size="7.5" fill="#606070">Select messages</text>
+          <text x="70" y="126" text-anchor="middle" font-size="7.5" fill="#606070">Add location label</text>
+          <text x="70" y="138" text-anchor="middle" font-size="7.5" fill="#606070">Tag GPS (optional)</text>
+
+          <line x1="130" y1="100" x2="163" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" marker-end="url(#arr-w)"/>
+
+          <!-- Step 2: Generate -->
+          <rect x="163" y="60" width="120" height="80" rx="10" fill="rgba(240,165,0,0.08)" stroke="rgba(240,165,0,0.3)" stroke-width="1.5"/>
+          <text x="223" y="85" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#ffcc44">GENERATE</text>
+          <text x="223" y="99" text-anchor="middle" font-size="8" fill="#ffcc44">STATION QR</text>
+          <text x="223" y="114" text-anchor="middle" font-size="7.5" fill="#606070">420px upscale</text>
+          <text x="223" y="126" text-anchor="middle" font-size="7.5" fill="#606070">MD: prefix + LZ</text>
+          <text x="223" y="138" text-anchor="middle" font-size="7.5" fill="#606070">compressed JSON</text>
+
+          <line x1="283" y1="100" x2="316" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" marker-end="url(#arr-w)"/>
+
+          <!-- Step 3: Print / Post -->
+          <rect x="316" y="40" width="120" height="120" rx="10" fill="rgba(90,200,250,0.07)" stroke="rgba(90,200,250,0.3)" stroke-width="1.5"/>
+          <text x="376" y="68" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#7dd8ff">PRINT / POST</text>
+          <!-- wall QR visual -->
+          <rect x="343" y="78" width="66" height="66" rx="4" fill="rgba(90,200,250,0.1)" stroke="rgba(90,200,250,0.4)" stroke-width="1"/>
+          <rect x="349" y="84" width="20" height="20" rx="2" fill="rgba(90,200,250,0.4)"/>
+          <rect x="375" y="84" width="8" height="8" fill="rgba(90,200,250,0.25)"/>
+          <rect x="388" y="84" width="14" height="8" fill="rgba(90,200,250,0.25)"/>
+          <rect x="349" y="108" width="14" height="8" fill="rgba(90,200,250,0.25)"/>
+          <rect x="368" y="100" width="20" height="20" rx="2" fill="rgba(90,200,250,0.4)"/>
+          <rect x="349" y="120" width="8" height="14" fill="rgba(90,200,250,0.25)"/>
+          <text x="376" y="158" text-anchor="middle" font-size="7.5" fill="#7dd8ff">Posted on wall</text>
+
+          <line x1="436" y1="100" x2="469" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" marker-end="url(#arr-w)"/>
+
+          <!-- Step 4: Anyone scans -->
+          <rect x="469" y="60" width="120" height="80" rx="10" fill="rgba(175,82,222,0.08)" stroke="rgba(175,82,222,0.3)" stroke-width="1.5"/>
+          <text x="529" y="82" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#c97fee">ANYONE</text>
+          <text x="529" y="96" text-anchor="middle" font-size="8" fill="#c97fee">SCANS WITH</text>
+          <text x="529" y="110" text-anchor="middle" font-size="8" fill="#c97fee">TRINETRA</text>
+          <text x="529" y="124" text-anchor="middle" font-size="7.5" fill="#606070">Camera → jsQR</text>
+          <text x="529" y="136" text-anchor="middle" font-size="7.5" fill="#606070">6-strategy decode</text>
+
+          <line x1="589" y1="100" x2="622" y2="100" stroke="rgba(0,230,118,0.5)" stroke-width="1.5" marker-end="url(#arr-g2)"/>
+
+          <!-- Step 5: Bundles received + relay -->
+          <rect x="622" y="40" width="128" height="120" rx="10" fill="rgba(0,230,118,0.08)" stroke="rgba(0,230,118,0.3)" stroke-width="1.5"/>
+          <text x="686" y="66" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#00e676">MESSAGES</text>
+          <text x="686" y="80" text-anchor="middle" font-size="8" fill="#00e676">RECEIVED</text>
+          <text x="686" y="96" text-anchor="middle" font-size="7.5" fill="#606070">Saved to IndexedDB</text>
+          <text x="686" y="110" text-anchor="middle" font-size="7.5" fill="#606070">Appear in Feed</text>
+          <text x="686" y="124" text-anchor="middle" font-size="7.5" fill="#606070">Relay to peers</text>
+          <text x="686" y="138" text-anchor="middle" font-size="7.5" fill="#606070">via P2P sync</text>
+
+          <!-- Labels -->
+          <text x="70" y="158" text-anchor="middle" font-size="8" fill="#606070">User action</text>
+          <text x="376" y="175" text-anchor="middle" font-size="8" fill="rgba(90,200,250,0.6)">Persistent · No power · No connection</text>
+          <text x="686" y="175" text-anchor="middle" font-size="8" fill="#00e676">Enters the mesh</text>
+
+          <!-- Key insight box -->
+          <rect x="140" y="185" width="480" height="30" rx="8" fill="rgba(196,26,26,0.07)" stroke="rgba(196,26,26,0.2)" stroke-width="1"/>
+          <text x="380" y="198" text-anchor="middle" font-size="9" font-weight="700" fill="#ff6666">The wall is a mesh node.</text>
+          <text x="380" y="210" text-anchor="middle" font-size="8" fill="#606070">Information persists and propagates without any device staying online.</text>
+
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 8 — Offline Capability Matrix
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 08</div>
+  <div class="section-title">Offline Capability Matrix</div>
+  <div class="section-desc">Every feature — categorised by what it needs and whether it works in a total blackout.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Needs Internet</th>
+            <th>Needs Cell</th>
+            <th>Needs LAN/Hotspot</th>
+            <th>Works Fully Offline</th>
+            <th>Mechanism</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>View feed messages</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">Yes</span></td>
+            <td>IndexedDB local read</td>
+          </tr>
+          <tr>
+            <td>Compose a message</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">Yes</span></td>
+            <td>IndexedDB write</td>
+          </tr>
+          <tr>
+            <td>View offline map</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">Yes</span></td>
+            <td>Leaflet + no tile server</td>
+          </tr>
+          <tr>
+            <td>GPS location tracking</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">Yes</span></td>
+            <td>navigator.geolocation</td>
+          </tr>
+          <tr>
+            <td>Draw safe route</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">Yes</span></td>
+            <td>Map tap → waypoints array</td>
+          </tr>
+          <tr>
+            <td>Generate station QR</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">Yes</span></td>
+            <td>qrcode library (bundled)</td>
+          </tr>
+          <tr>
+            <td>Scan QR to receive data</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">Yes</span></td>
+            <td>jsQR + camera API</td>
+          </tr>
+          <tr>
+            <td>P2P device connection</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-amber">Yes (same LAN)</span></td>
+            <td><span class="badge badge-amber">LAN required</span></td>
+            <td>WebRTC DataChannel</td>
+          </tr>
+          <tr>
+            <td>Multi-hop relay</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-amber">Yes (per hop)</span></td>
+            <td><span class="badge badge-amber">LAN per hop</span></td>
+            <td>Differential sync protocol</td>
+          </tr>
+          <tr>
+            <td>Encrypted DM</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-amber">Yes (active link)</span></td>
+            <td><span class="badge badge-amber">LAN required</span></td>
+            <td>ECDH + AES over DataChannel</td>
+          </tr>
+          <tr>
+            <td>Bluetooth device discovery</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">Yes (proximity)</span></td>
+            <td>Web Bluetooth (hint only)</td>
+          </tr>
+          <tr>
+            <td>PWA app loading</td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">No</span></td>
+            <td><span class="badge badge-green">Yes</span></td>
+            <td>Service Worker precache</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:16px;padding:12px 16px;background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.2);border-radius:8px;font-size:0.83rem;color:#606070;">
+        <span style="color:#00e676;font-weight:700;">Key takeaway:</span> 10 of 12 features work with zero network of any kind. Only live P2P sync requires a shared LAN or hotspot — which is available even when internet and cellular are both cut.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 9 — Fragment Relay System
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 09</div>
+  <div class="section-title">Fragment Relay System — Bandwidth-Efficient Body Transfer</div>
+  <div class="section-desc">When a message body is too large to relay in one go, TRINETRA splits it into numbered fragments. Each fragment relays independently and reassembles on the receiving node.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 800 320" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:800px;">
+          <defs>
+            <marker id="arr-frag" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(255,255,255,0.4)"/>
+            </marker>
+            <marker id="arr-frag-g" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#00e676"/>
+            </marker>
+            <marker id="arr-frag-a" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#ffcc44"/>
+            </marker>
+          </defs>
+
+          <!-- Origin: Full message -->
+          <rect x="14" y="20" width="200" height="80" rx="10" fill="rgba(196,26,26,0.1)" stroke="rgba(196,26,26,0.4)" stroke-width="1.5"/>
+          <text x="114" y="42" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#ff6666">ORIGIN (full body)</text>
+          <text x="114" y="58" text-anchor="middle" font-size="8.5" fill="#f0f0f0">body = 500 chars</text>
+          <text x="114" y="72" text-anchor="middle" font-size="8" fill="#606070">bodyState: "full"</text>
+          <text x="114" y="85" text-anchor="middle" font-size="8" fill="#606070">fragmentCount: 3</text>
+
+          <!-- Split arrow down -->
+          <line x1="114" y1="100" x2="114" y2="128" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" marker-end="url(#arr-frag)"/>
+          <text x="120" y="118" font-size="8" fill="#606070">split into fragments</text>
+
+          <!-- Fragment boxes -->
+          <rect x="14" y="130" width="160" height="48" rx="8" fill="rgba(240,165,0,0.1)" stroke="rgba(240,165,0,0.35)" stroke-width="1.2"/>
+          <text x="94" y="148" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#ffcc44">FRAGMENT 1</text>
+          <text x="94" y="162" text-anchor="middle" font-size="8" fill="#606070">fragments[0]  |  bodyState:"partial"</text>
+          <text x="94" y="174" text-anchor="middle" font-size="7.5" fill="#606070">MDm:1/3  →  relay independently</text>
+
+          <rect x="14" y="190" width="160" height="48" rx="8" fill="rgba(240,165,0,0.08)" stroke="rgba(240,165,0,0.3)" stroke-width="1.2"/>
+          <text x="94" y="208" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#ffcc44">FRAGMENT 2</text>
+          <text x="94" y="222" text-anchor="middle" font-size="8" fill="#606070">fragments[1]  |  bodyState:"partial"</text>
+          <text x="94" y="234" text-anchor="middle" font-size="7.5" fill="#606070">MDm:2/3  →  relay independently</text>
+
+          <rect x="14" y="250" width="160" height="48" rx="8" fill="rgba(240,165,0,0.06)" stroke="rgba(240,165,0,0.25)" stroke-width="1.2"/>
+          <text x="94" y="268" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#ffcc44">FRAGMENT 3</text>
+          <text x="94" y="282" text-anchor="middle" font-size="8" fill="#606070">fragments[2]  |  bodyState:"partial"</text>
+          <text x="94" y="294" text-anchor="middle" font-size="7.5" fill="#606070">MDm:3/3  →  relay independently</text>
+
+          <!-- Receiving node: collecting -->
+          <rect x="310" y="130" width="200" height="168" rx="10" fill="rgba(59,125,232,0.08)" stroke="rgba(59,125,232,0.3)" stroke-width="1.5"/>
+          <text x="410" y="152" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#6fa0ff">RECEIVING NODE</text>
+          <text x="410" y="166" text-anchor="middle" font-size="8" fill="#606070">collecting fragments...</text>
+
+          <rect x="326" y="174" width="168" height="22" rx="5" fill="rgba(240,165,0,0.12)" stroke="rgba(240,165,0,0.25)" stroke-width="1"/>
+          <text x="410" y="189" text-anchor="middle" font-size="8" fill="#ffcc44">✓ fragment[0] received</text>
+          <rect x="326" y="200" width="168" height="22" rx="5" fill="rgba(240,165,0,0.12)" stroke="rgba(240,165,0,0.25)" stroke-width="1"/>
+          <text x="410" y="215" text-anchor="middle" font-size="8" fill="#ffcc44">✓ fragment[1] received</text>
+          <rect x="326" y="226" width="168" height="22" rx="5" fill="rgba(96,96,112,0.12)" stroke="rgba(96,96,112,0.2)" stroke-width="1"/>
+          <text x="410" y="241" text-anchor="middle" font-size="8" fill="#606070">… fragment[2] pending</text>
+
+          <text x="410" y="268" text-anchor="middle" font-size="8" fill="#6fa0ff">Feed shows "SCOPED" badge</text>
+          <text x="410" y="281" text-anchor="middle" font-size="8" fill="#606070">bodyPreview visible — body not yet</text>
+          <text x="410" y="294" text-anchor="middle" font-size="8" fill="#606070">Progress: 2 / 3 fragments</text>
+
+          <!-- Arrows from fragments to receiving -->
+          <line x1="174" y1="155" x2="308" y2="185" stroke="rgba(240,165,0,0.5)" stroke-width="1.2" marker-end="url(#arr-frag-a)"/>
+          <line x1="174" y1="215" x2="308" y2="215" stroke="rgba(240,165,0,0.5)" stroke-width="1.2" marker-end="url(#arr-frag-a)"/>
+
+          <!-- Assembled result -->
+          <rect x="580" y="60" width="206" height="200" rx="10" fill="rgba(0,230,118,0.07)" stroke="rgba(0,230,118,0.3)" stroke-width="1.5"/>
+          <text x="683" y="84" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#00e676">FULLY ASSEMBLED</text>
+
+          <rect x="596" y="96" width="174" height="22" rx="5" fill="rgba(0,230,118,0.12)" stroke="rgba(0,230,118,0.25)" stroke-width="1"/>
+          <text x="683" y="111" text-anchor="middle" font-size="8" fill="#00e676">✓ fragment[0]</text>
+          <rect x="596" y="122" width="174" height="22" rx="5" fill="rgba(0,230,118,0.12)" stroke="rgba(0,230,118,0.25)" stroke-width="1"/>
+          <text x="683" y="137" text-anchor="middle" font-size="8" fill="#00e676">✓ fragment[1]</text>
+          <rect x="596" y="148" width="174" height="22" rx="5" fill="rgba(0,230,118,0.12)" stroke="rgba(0,230,118,0.25)" stroke-width="1"/>
+          <text x="683" y="163" text-anchor="middle" font-size="8" fill="#00e676">✓ fragment[2]</text>
+
+          <line x1="683" y1="172" x2="683" y2="190" stroke="rgba(0,230,118,0.4)" stroke-width="1.5" marker-end="url(#arr-frag-g)"/>
+          <rect x="596" y="192" width="174" height="22" rx="5" fill="rgba(0,230,118,0.2)" stroke="rgba(0,230,118,0.4)" stroke-width="1"/>
+          <text x="683" y="207" text-anchor="middle" font-size="8" font-weight="700" fill="#00e676">join → full body assembled</text>
+          <text x="683" y="228" text-anchor="middle" font-size="8" fill="#606070">bodyState: "full"</text>
+          <text x="683" y="242" text-anchor="middle" font-size="8" fill="#606070">"SCOPED" badge removed</text>
+
+          <!-- arrow from receiving to assembled -->
+          <line x1="510" y1="214" x2="578" y2="160" stroke="rgba(0,230,118,0.4)" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#arr-frag-g)"/>
+          <rect x="514" y="132" width="60" height="20" rx="4" fill="rgba(0,230,118,0.08)"/>
+          <text x="544" y="145" text-anchor="middle" font-size="7.5" fill="#00e676">all 3 arrive</text>
+
+          <!-- Key insight -->
+          <rect x="310" y="18" width="476" height="100" rx="10" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="548" y="38" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#f0f0f0">FRAGMENT ISOLATION — SECURITY PROPERTY</text>
+          <text x="548" y="55" text-anchor="middle" font-size="8.5" fill="#606070">Fragment 1 alone reveals 1/3 of the body — not the complete message</text>
+          <text x="548" y="70" text-anchor="middle" font-size="8.5" fill="#606070">bodyPreview is always relayed — fragments only carry body chunks</text>
+          <text x="548" y="85" text-anchor="middle" font-size="8.5" fill="#606070">Fragments from different relay paths can merge on any receiving node</text>
+          <text x="548" y="100" text-anchor="middle" font-size="8.5" fill="#606070">fragmentCount tells the node how many pieces to wait for before assembling</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 10 — QR Decode Pipeline (6-Strategy)
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 10</div>
+  <div class="section-title">QR Decode Pipeline — 6-Strategy Per Frame</div>
+  <div class="section-desc">Every camera frame is processed through six distinct strategies in parallel before jsQR attempts a decode. First success wins. Handles low light, glare, tilt, and partial occlusion automatically.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 800 340" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:800px;">
+          <defs>
+            <marker id="arr-qrd" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(255,255,255,0.35)"/>
+            </marker>
+            <marker id="arr-qrd-g" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#00e676"/>
+            </marker>
+            <marker id="arr-qrd-r" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#ff4444"/>
+            </marker>
+          </defs>
+
+          <!-- Camera frame input -->
+          <rect x="14" y="130" width="100" height="80" rx="10" fill="rgba(90,200,250,0.1)" stroke="rgba(90,200,250,0.35)" stroke-width="1.5"/>
+          <text x="64" y="158" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#7dd8ff">CAMERA</text>
+          <text x="64" y="172" text-anchor="middle" font-size="8" fill="#7dd8ff">FRAME</text>
+          <text x="64" y="186" text-anchor="middle" font-size="7.5" fill="#606070">ImageData</text>
+          <text x="64" y="198" text-anchor="middle" font-size="7.5" fill="#606070">per 100ms tick</text>
+
+          <!-- Fan-out arrow -->
+          <line x1="114" y1="170" x2="148" y2="170" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" marker-end="url(#arr-qrd)"/>
+
+          <!-- 6 strategy boxes, stacked -->
+          <!-- S1 -->
+          <rect x="150" y="20" width="210" height="40" rx="7" fill="rgba(59,125,232,0.1)" stroke="rgba(59,125,232,0.35)" stroke-width="1.2"/>
+          <text x="162" y="36" font-size="8.5" font-weight="700" fill="#6fa0ff">Strategy 1 — Raw frame</text>
+          <text x="162" y="50" font-size="8" fill="#606070">jsQR(frame.data, w, h)  ← no preprocessing</text>
+
+          <!-- S2 -->
+          <rect x="150" y="68" width="210" height="40" rx="7" fill="rgba(59,125,232,0.1)" stroke="rgba(59,125,232,0.3)" stroke-width="1.2"/>
+          <text x="162" y="84" font-size="8.5" font-weight="700" fill="#6fa0ff">Strategy 2 — Contrast Enhanced</text>
+          <text x="162" y="98" font-size="8" fill="#606070">Boost contrast on ImageData → jsQR()</text>
+
+          <!-- S3 -->
+          <rect x="150" y="116" width="210" height="40" rx="7" fill="rgba(59,125,232,0.1)" stroke="rgba(59,125,232,0.25)" stroke-width="1.2"/>
+          <text x="162" y="132" font-size="8.5" font-weight="700" fill="#6fa0ff">Strategy 3 — Binarized</text>
+          <text x="162" y="146" font-size="8" fill="#606070">pixel &lt; 128 → 0, else 255 → jsQR()</text>
+
+          <!-- S4 -->
+          <rect x="150" y="164" width="210" height="40" rx="7" fill="rgba(175,82,222,0.1)" stroke="rgba(175,82,222,0.3)" stroke-width="1.2"/>
+          <text x="162" y="180" font-size="8.5" font-weight="700" fill="#c97fee">Strategy 4 — 72% Center Crop + Raw</text>
+          <text x="162" y="194" font-size="8" fill="#606070">Crop to inner 72% → raw → jsQR()</text>
+
+          <!-- S5 -->
+          <rect x="150" y="212" width="210" height="40" rx="7" fill="rgba(175,82,222,0.1)" stroke="rgba(175,82,222,0.25)" stroke-width="1.2"/>
+          <text x="162" y="228" font-size="8.5" font-weight="700" fill="#c97fee">Strategy 5 — 72% Crop + Contrast</text>
+          <text x="162" y="242" font-size="8" fill="#606070">Crop 72% + contrast enhance → jsQR()</text>
+
+          <!-- S6 -->
+          <rect x="150" y="260" width="210" height="40" rx="7" fill="rgba(175,82,222,0.1)" stroke="rgba(175,82,222,0.2)" stroke-width="1.2"/>
+          <text x="162" y="276" font-size="8.5" font-weight="700" fill="#c97fee">Strategy 6 — 50% Crop + Binarized</text>
+          <text x="162" y="290" font-size="8" fill="#606070">Crop 50% + hard threshold → jsQR()</text>
+
+          <!-- Vertical fan line -->
+          <line x1="148" y1="40" x2="148" y2="280" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="3 2"/>
+          <line x1="148" y1="40" x2="150" y2="40" stroke="rgba(255,255,255,0.2)" stroke-width="1" marker-end="url(#arr-qrd)"/>
+          <line x1="148" y1="88" x2="150" y2="88" stroke="rgba(255,255,255,0.2)" stroke-width="1" marker-end="url(#arr-qrd)"/>
+          <line x1="148" y1="136" x2="150" y2="136" stroke="rgba(255,255,255,0.2)" stroke-width="1" marker-end="url(#arr-qrd)"/>
+          <line x1="148" y1="184" x2="150" y2="184" stroke="rgba(255,255,255,0.2)" stroke-width="1" marker-end="url(#arr-qrd)"/>
+          <line x1="148" y1="232" x2="150" y2="232" stroke="rgba(255,255,255,0.2)" stroke-width="1" marker-end="url(#arr-qrd)"/>
+          <line x1="148" y1="280" x2="150" y2="280" stroke="rgba(255,255,255,0.2)" stroke-width="1" marker-end="url(#arr-qrd)"/>
+
+          <!-- jsQR results -->
+          <rect x="400" y="130" width="130" height="80" rx="8" fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <text x="465" y="154" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#f0f0f0">jsQR RESULT</text>
+          <text x="465" y="170" text-anchor="middle" font-size="8.5" fill="#00e676">non-null → SUCCESS</text>
+          <text x="465" y="184" text-anchor="middle" font-size="8.5" fill="#606070">null → next strategy</text>
+          <text x="465" y="198" text-anchor="middle" font-size="8" fill="#606070">all null → next frame</text>
+
+          <!-- Arrows from strategies to result box -->
+          <line x1="360" y1="40" x2="398" y2="155" stroke="rgba(59,125,232,0.3)" stroke-width="1" stroke-dasharray="3 2"/>
+          <line x1="360" y1="88" x2="398" y2="162" stroke="rgba(59,125,232,0.3)" stroke-width="1" stroke-dasharray="3 2"/>
+          <line x1="360" y1="136" x2="398" y2="168" stroke="rgba(59,125,232,0.3)" stroke-width="1" stroke-dasharray="3 2"/>
+          <line x1="360" y1="184" x2="398" y2="175" stroke="rgba(175,82,222,0.3)" stroke-width="1" stroke-dasharray="3 2"/>
+          <line x1="360" y1="232" x2="398" y2="182" stroke="rgba(175,82,222,0.3)" stroke-width="1" stroke-dasharray="3 2"/>
+          <line x1="360" y1="280" x2="398" y2="195" stroke="rgba(175,82,222,0.3)" stroke-width="1" stroke-dasharray="3 2"/>
+
+          <!-- Success path -->
+          <rect x="560" y="60" width="220" height="56" rx="8" fill="rgba(0,230,118,0.1)" stroke="rgba(0,230,118,0.35)" stroke-width="1.5"/>
+          <text x="670" y="80" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#00e676">DECODE SUCCESS</text>
+          <text x="670" y="96" text-anchor="middle" font-size="8" fill="#606070">MDSDP: → WebRTC SDP offer/answer</text>
+          <text x="670" y="108" text-anchor="middle" font-size="8" fill="#606070">MD: / MDm: → bundle array import</text>
+
+          <line x1="530" y1="155" x2="558" y2="100" stroke="#00e676" stroke-width="1.5" marker-end="url(#arr-qrd-g)"/>
+
+          <!-- Failure path -->
+          <rect x="560" y="220" width="220" height="44" rx="8" fill="rgba(196,26,26,0.07)" stroke="rgba(196,26,26,0.25)" stroke-width="1.5"/>
+          <text x="670" y="238" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="10" font-weight="900" fill="#ff4444">ALL 6 FAIL</text>
+          <text x="670" y="254" text-anchor="middle" font-size="8" fill="#606070">Wait for next frame tick (100ms)</text>
+
+          <line x1="530" y1="180" x2="558" y2="238" stroke="rgba(196,26,26,0.4)" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#arr-qrd-r)"/>
+
+          <!-- Multi-part tracker -->
+          <rect x="560" y="140" width="220" height="70" rx="8" fill="rgba(240,165,0,0.08)" stroke="rgba(240,165,0,0.28)" stroke-width="1.5"/>
+          <text x="670" y="158" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#ffcc44">MULTI-PART TRACKING</text>
+          <text x="670" y="173" text-anchor="middle" font-size="8" fill="#606070">MDm:1/3 → store chunk 1</text>
+          <text x="670" y="186" text-anchor="middle" font-size="8" fill="#606070">MDm:2/3 → store chunk 2</text>
+          <text x="670" y="199" text-anchor="middle" font-size="8" fill="#606070">MDm:3/3 → join all → parse JSON</text>
+
+          <!-- Torch label -->
+          <rect x="14" y="240" width="100" height="32" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="64" y="254" text-anchor="middle" font-size="8" fill="#606070">Torch control:</text>
+          <text x="64" y="266" text-anchor="middle" font-size="8" fill="#7dd8ff">torch:true via applyConstraints</text>
+
+          <!-- frame interval label -->
+          <text x="64" y="310" text-anchor="middle" font-size="8" fill="#606070">100ms per frame tick</text>
+          <text x="64" y="322" text-anchor="middle" font-size="8" fill="#606070">≈ 10 scans/second</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 11 — Message Types Reference
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 11</div>
+  <div class="section-title">Message Types — 7 Types, Visual Reference</div>
+  <div class="section-desc">TRINETRA supports 7 distinct message types. Each has a recommended priority range, visual treatment in the feed, and a specific use case in a blackout scenario.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Priority Range</th>
+            <th>Visual Treatment</th>
+            <th>Map Pin</th>
+            <th>Blackout Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-red">emergency</span></td>
+            <td class="mono">90–100</td>
+            <td>Red corner-bracket styling, LIVE pulsing dot, always sorted first</td>
+            <td style="color:#ff4444;">⚠ Red</td>
+            <td>Bridge collapse, curfew, active threat, evacuation order</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-amber">alert</span></td>
+            <td class="mono">70–89</td>
+            <td>Amber border, bold title, sorted near top</td>
+            <td style="color:#f0a500;">! Orange</td>
+            <td>Road blocked, crowd gathering, area to avoid</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">safe-route</span></td>
+            <td class="mono">60–79</td>
+            <td>Green polyline on map, route popup on click, directional indicator</td>
+            <td style="color:#00e676;">→ Green + polyline</td>
+            <td>Walkable corridor to safety, alternate road, path through blockade</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-teal">medical</span></td>
+            <td class="mono">50–69</td>
+            <td>Teal cross icon, highlighted body text</td>
+            <td style="color:#5ac8fa;">✚ Teal</td>
+            <td>First aid station, doctor location, medical supplies available</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-blue">shelter</span></td>
+            <td class="mono">40–59</td>
+            <td>Blue border, shelter icon in card header</td>
+            <td style="color:#3b7de8;">⌂ Blue</td>
+            <td>Relief camp, safe building, overnight shelter available</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-amber">resource</span></td>
+            <td class="mono">30–49</td>
+            <td>Amber badge, resource-type icon, expiry prominently shown</td>
+            <td style="color:#f0a500;">◆ Amber</td>
+            <td>Water, food, fuel, charging point, blankets available</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-muted">info</span></td>
+            <td class="mono">0–29</td>
+            <td>Muted styling, sorted below actionable types</td>
+            <td style="color:#8e8e9e;">ℹ Muted</td>
+            <td>Power restored, area update, general community notice</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:16px;padding:12px 16px;background:rgba(59,125,232,0.06);border:1px solid rgba(59,125,232,0.2);border-radius:8px;font-size:0.83rem;color:#606070;">
+        <span style="color:#6fa0ff;font-weight:700;">Priority determines relay order:</span> In MSG_HAVE, message IDs are sorted by priority descending. Higher-priority messages are sent first in MSG_BUNDLES. This ensures emergency alerts propagate ahead of general info even when bandwidth is tight.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 12 — Screen Feature Map
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 12</div>
+  <div class="section-title">Screen Feature Map — All 6 Screens</div>
+  <div class="section-desc">TRINETRA's six navigation screens and their key capabilities. Every screen works fully offline.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 860 460" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:860px;">
+
+          <!-- FEED screen -->
+          <rect x="10" y="10" width="260" height="210" rx="12" fill="rgba(196,26,26,0.06)" stroke="rgba(196,26,26,0.35)" stroke-width="1.5"/>
+          <rect x="10" y="10" width="260" height="36" rx="12" fill="rgba(196,26,26,0.15)" stroke="none"/>
+          <rect x="10" y="34" width="260" height="12" rx="0" fill="rgba(196,26,26,0.15)" stroke="none"/>
+          <text x="140" y="33" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#ff4444">FEED</text>
+          <text x="24" y="68" font-size="8.5" fill="#f0f0f0">• 7 message types with distinct card styling</text>
+          <text x="24" y="84" font-size="8.5" fill="#f0f0f0">• TTL progress bar with urgency animation</text>
+          <text x="24" y="100" font-size="8.5" fill="#f0f0f0">• Priority-sorted feed (emergency first)</text>
+          <text x="24" y="116" font-size="8.5" fill="#f0f0f0">• RELAYED badge + hop count on each card</text>
+          <text x="24" y="132" font-size="8.5" fill="#f0f0f0">• Compose: title, body, type, expiry, GPS</text>
+          <text x="24" y="148" font-size="8.5" fill="#f0f0f0">• Update button (localSessionOwned only)</text>
+          <text x="24" y="164" font-size="8.5" fill="#f0f0f0">• SCOPED badge for partial-body messages</text>
+          <text x="24" y="180" font-size="8.5" fill="#f0f0f0">• Emergency tactical corner-bracket style</text>
+          <text x="24" y="196" font-size="8.5" fill="#f0f0f0">• LIVE pulsing dot on emergency cards</text>
+          <text x="24" y="212" font-size="8.5" fill="#606070">  IndexedDB → priority sort → render</text>
+
+          <!-- CONNECT screen -->
+          <rect x="300" y="10" width="260" height="210" rx="12" fill="rgba(59,125,232,0.06)" stroke="rgba(59,125,232,0.35)" stroke-width="1.5"/>
+          <rect x="300" y="10" width="260" height="36" rx="12" fill="rgba(59,125,232,0.15)" stroke="none"/>
+          <rect x="300" y="34" width="260" height="12" rx="0" fill="rgba(59,125,232,0.15)" stroke="none"/>
+          <text x="430" y="33" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#6fa0ff">CONNECT</text>
+          <text x="314" y="68" font-size="8.5" fill="#f0f0f0">• Live animated mesh topology SVG diagram</text>
+          <text x="314" y="84" font-size="8.5" fill="#f0f0f0">• Nodes: connected, (Red=self, Blue=peers)</text>
+          <text x="314" y="100" font-size="8.5" fill="#f0f0f0">• Session relay stats (nodes, msgs, max hop)</text>
+          <text x="314" y="116" font-size="8.5" fill="#f0f0f0">• Host QR: generate + display SDP offer</text>
+          <text x="314" y="132" font-size="8.5" fill="#f0f0f0">• Join QR: scan offer → display answer</text>
+          <text x="314" y="148" font-size="8.5" fill="#f0f0f0">• BroadcastChannel same-device discovery</text>
+          <text x="314" y="164" font-size="8.5" fill="#f0f0f0">• Web Bluetooth proximity hints</text>
+          <text x="314" y="180" font-size="8.5" fill="#f0f0f0">• Saved session contacts + re-pair</text>
+          <text x="314" y="196" font-size="8.5" fill="#f0f0f0">• Hotspot setup guide (iOS + Android)</text>
+          <text x="314" y="212" font-size="8.5" fill="#606070">  WebRTC + QR out-of-band signaling</text>
+
+          <!-- MAP screen -->
+          <rect x="590" y="10" width="260" height="210" rx="12" fill="rgba(0,230,118,0.05)" stroke="rgba(0,230,118,0.3)" stroke-width="1.5"/>
+          <rect x="590" y="10" width="260" height="36" rx="12" fill="rgba(0,230,118,0.12)" stroke="none"/>
+          <rect x="590" y="34" width="260" height="12" rx="0" fill="rgba(0,230,118,0.12)" stroke="none"/>
+          <text x="720" y="33" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#00e676">MAP</text>
+          <text x="604" y="68" font-size="8.5" fill="#f0f0f0">• Leaflet.js offline map (no tile server)</text>
+          <text x="604" y="84" font-size="8.5" fill="#f0f0f0">• GPS watchPosition — live blue dot</text>
+          <text x="604" y="100" font-size="8.5" fill="#f0f0f0">• Coloured pins per message type</text>
+          <text x="604" y="116" font-size="8.5" fill="#f0f0f0">• Safe-route polyline rendering (green)</text>
+          <text x="604" y="132" font-size="8.5" fill="#f0f0f0">• Draw Route mode: tap → waypoints</text>
+          <text x="604" y="148" font-size="8.5" fill="#f0f0f0">• Save route → auto-broadcast to peers</text>
+          <text x="604" y="164" font-size="8.5" fill="#f0f0f0">• Pin / polyline click → info popup</text>
+          <text x="604" y="180" font-size="8.5" fill="#f0f0f0">• Filter by message type</text>
+          <text x="604" y="196" font-size="8.5" fill="#f0f0f0">• Zoom / pan / locate self controls</text>
+          <text x="604" y="212" font-size="8.5" fill="#606070">  navigator.geolocation + Leaflet</text>
+
+          <!-- QR DROP screen -->
+          <rect x="10" y="240" width="260" height="210" rx="12" fill="rgba(240,165,0,0.05)" stroke="rgba(240,165,0,0.3)" stroke-width="1.5"/>
+          <rect x="10" y="240" width="260" height="36" rx="12" fill="rgba(240,165,0,0.12)" stroke="none"/>
+          <rect x="10" y="264" width="260" height="12" rx="0" fill="rgba(240,165,0,0.12)" stroke="none"/>
+          <text x="140" y="263" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#ffcc44">QR DROP</text>
+          <text x="24" y="298" font-size="8.5" fill="#f0f0f0">• Export tab: select msgs → Generate QR</text>
+          <text x="24" y="314" font-size="8.5" fill="#f0f0f0">• Send to Peers button (over DataChannel)</text>
+          <text x="24" y="330" font-size="8.5" fill="#f0f0f0">• Station tab: printable 420px station QR</text>
+          <text x="24" y="346" font-size="8.5" fill="#f0f0f0">• Station: add location label + GPS tag</text>
+          <text x="24" y="362" font-size="8.5" fill="#f0f0f0">• Download as PNG / Print button</text>
+          <text x="24" y="378" font-size="8.5" fill="#f0f0f0">• Scan tab: camera scanner, 6-strategy</text>
+          <text x="24" y="394" font-size="8.5" fill="#f0f0f0">• Torch toggle for low-light scanning</text>
+          <text x="24" y="410" font-size="8.5" fill="#f0f0f0">• Category filter chips, select all/none</text>
+          <text x="24" y="426" font-size="8.5" fill="#f0f0f0">• Multi-part QR progress tracker</text>
+          <text x="24" y="442" font-size="8.5" fill="#606070">  qrcode lib + jsQR + MD: / MDm: prefix</text>
+
+          <!-- DM screen -->
+          <rect x="300" y="240" width="260" height="210" rx="12" fill="rgba(175,82,222,0.05)" stroke="rgba(175,82,222,0.3)" stroke-width="1.5"/>
+          <rect x="300" y="240" width="260" height="36" rx="12" fill="rgba(175,82,222,0.12)" stroke="none"/>
+          <rect x="300" y="264" width="260" height="12" rx="0" fill="rgba(175,82,222,0.12)" stroke="none"/>
+          <text x="430" y="263" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#c97fee">DM</text>
+          <text x="314" y="298" font-size="8.5" fill="#f0f0f0">• E2E encrypted 1:1 chat per connected peer</text>
+          <text x="314" y="314" font-size="8.5" fill="#f0f0f0">• ECDH P-256 key exchange on connect</text>
+          <text x="314" y="330" font-size="8.5" fill="#f0f0f0">• AES-256-GCM encrypt/decrypt per message</text>
+          <text x="314" y="346" font-size="8.5" fill="#f0f0f0">• 🔒 encrypted indicator on each message</text>
+          <text x="314" y="362" font-size="8.5" fill="#f0f0f0">• Keys in RAM only — destroyed on reload</text>
+          <text x="314" y="378" font-size="8.5" fill="#f0f0f0">• Contact alias with custom naming</text>
+          <text x="314" y="394" font-size="8.5" fill="#f0f0f0">• Unread badge count in bottom nav</text>
+          <text x="314" y="410" font-size="8.5" fill="#f0f0f0">• Toast notification with tap-to-open</text>
+          <text x="314" y="426" font-size="8.5" fill="#f0f0f0">• Fallback to plaintext if key not yet exchanged</text>
+          <text x="314" y="442" font-size="8.5" fill="#606070">  WebCrypto API + WebRTC DataChannel</text>
+
+          <!-- SETTINGS screen -->
+          <rect x="590" y="240" width="260" height="210" rx="12" fill="rgba(90,200,250,0.05)" stroke="rgba(90,200,250,0.28)" stroke-width="1.5"/>
+          <rect x="590" y="240" width="260" height="36" rx="12" fill="rgba(90,200,250,0.12)" stroke="none"/>
+          <rect x="590" y="264" width="260" height="12" rx="0" fill="rgba(90,200,250,0.12)" stroke="none"/>
+          <text x="720" y="263" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#7dd8ff">SETTINGS</text>
+          <text x="604" y="298" font-size="8.5" fill="#f0f0f0">• View + reset session identity</text>
+          <text x="604" y="314" font-size="8.5" fill="#f0f0f0">• Load Demo Data (9 realistic messages)</text>
+          <text x="604" y="330" font-size="8.5" fill="#f0f0f0">• Export messages as JSON backup</text>
+          <text x="604" y="346" font-size="8.5" fill="#f0f0f0">• Import messages from JSON file</text>
+          <text x="604" y="362" font-size="8.5" fill="#f0f0f0">• Emergency wipe button (+ 5-tap logo)</text>
+          <text x="604" y="378" font-size="8.5" fill="#f0f0f0">• App version + build info</text>
+          <text x="604" y="394" font-size="8.5" fill="#f0f0f0">• Storage usage statistics</text>
+          <text x="604" y="410" font-size="8.5" fill="#f0f0f0">• Feature flags (if any active)</text>
+          <text x="604" y="426" font-size="8.5" fill="#f0f0f0">• Notification preferences</text>
+          <text x="604" y="442" font-size="8.5" fill="#606070">  localStorage + IndexedDB + identity.js</text>
+
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 13 — BroadcastChannel Multi-Tab Mode
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 13</div>
+  <div class="section-title">BroadcastChannel — Same-Device Multi-Tab Demo Mode</div>
+  <div class="section-desc">Three browser tabs on one laptop simulate three independent mesh nodes. BroadcastChannel handles discovery; WebRTC DataChannels handle actual data relay — exactly like a real 3-device demo.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 800 300" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:800px;">
+          <defs>
+            <marker id="arr-bc" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(90,200,250,0.7)"/>
+            </marker>
+            <marker id="arr-bc-r" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#ff4444"/>
+            </marker>
+            <marker id="arr-bc-b" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#6fa0ff"/>
+            </marker>
+            <marker id="arr-bc-g" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#00e676"/>
+            </marker>
+          </defs>
+
+          <!-- Browser window outline -->
+          <rect x="10" y="10" width="778" height="240" rx="10" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <!-- Browser chrome -->
+          <rect x="10" y="10" width="778" height="28" rx="10" fill="rgba(255,255,255,0.06)" stroke="none"/>
+          <rect x="10" y="28" width="778" height="10" rx="0" fill="rgba(255,255,255,0.06)" stroke="none"/>
+          <!-- Tab labels -->
+          <rect x="20" y="13" width="100" height="22" rx="4" fill="rgba(196,26,26,0.2)" stroke="rgba(196,26,26,0.4)" stroke-width="1"/>
+          <text x="70" y="28" text-anchor="middle" font-size="8.5" font-weight="700" fill="#ff4444">Tab A — Node ABCD</text>
+          <rect x="128" y="13" width="100" height="22" rx="4" fill="rgba(59,125,232,0.2)" stroke="rgba(59,125,232,0.4)" stroke-width="1"/>
+          <text x="178" y="28" text-anchor="middle" font-size="8.5" font-weight="700" fill="#6fa0ff">Tab B — Node EFGH</text>
+          <rect x="236" y="13" width="100" height="22" rx="4" fill="rgba(0,230,118,0.15)" stroke="rgba(0,230,118,0.35)" stroke-width="1"/>
+          <text x="286" y="28" text-anchor="middle" font-size="8.5" font-weight="700" fill="#00e676">Tab C — Node IJKL</text>
+          <text x="500" y="28" text-anchor="middle" font-size="8" fill="#606070">TRINETRA — Single Browser, Same Device</text>
+
+          <!-- Tab A content -->
+          <rect x="20" y="46" width="230" height="190" rx="8" fill="rgba(196,26,26,0.06)" stroke="rgba(196,26,26,0.25)" stroke-width="1.2"/>
+          <text x="135" y="66" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#ff4444">TAB A  —  ORIGIN</text>
+          <text x="34" y="86" font-size="8" fill="#f0f0f0">1. Composes message</text>
+          <text x="34" y="100" font-size="8" fill="#606070">   ttl:80, hops:0 → IndexedDB</text>
+          <text x="34" y="116" font-size="8" fill="#f0f0f0">2. Announces via BroadcastChannel</text>
+          <text x="34" y="130" font-size="8" fill="#606070">   { type:'announce', shortId:'ABCD' }</text>
+          <text x="34" y="146" font-size="8" fill="#f0f0f0">3. Sees Tab B, Tab C in peers list</text>
+          <text x="34" y="162" font-size="8" fill="#f0f0f0">4. QR-pairs with Tab B (same screen)</text>
+          <text x="34" y="178" font-size="8" fill="#606070">   Host QR → scan in Tab B</text>
+          <text x="34" y="194" font-size="8" fill="#f0f0f0">5. MSG_HAVE → MSG_BUNDLES to Tab B</text>
+          <text x="34" y="214" font-size="8" fill="#606070">   Feed shows "RELAYED 1 HOP" on Tab B</text>
+
+          <!-- Tab B content -->
+          <rect x="284" y="46" width="230" height="190" rx="8" fill="rgba(59,125,232,0.06)" stroke="rgba(59,125,232,0.25)" stroke-width="1.2"/>
+          <text x="399" y="66" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#6fa0ff">TAB B  —  RELAY</text>
+          <text x="298" y="86" font-size="8" fill="#f0f0f0">1. Announces via BroadcastChannel</text>
+          <text x="298" y="100" font-size="8" fill="#f0f0f0">2. Receives Tab A's message via WebRTC</text>
+          <text x="298" y="114" font-size="8" fill="#606070">   ttl:79, hops:1 → saved + RELAYED badge</text>
+          <text x="298" y="130" font-size="8" fill="#f0f0f0">3. QR-pairs with Tab C</text>
+          <text x="298" y="144" font-size="8" fill="#606070">   Host QR → scan in Tab C</text>
+          <text x="298" y="160" font-size="8" fill="#f0f0f0">4. MSG_HAVE → MSG_BUNDLES to Tab C</text>
+          <text x="298" y="174" font-size="8" fill="#606070">   ttl:78, hops:2</text>
+          <text x="298" y="190" font-size="8" fill="#f0f0f0">5. Fanout: if also connected to Tab A,</text>
+          <text x="298" y="204" font-size="8" fill="#606070">   sync is skipped (A already has it)</text>
+
+          <!-- Tab C content -->
+          <rect x="548" y="46" width="230" height="190" rx="8" fill="rgba(0,230,118,0.05)" stroke="rgba(0,230,118,0.22)" stroke-width="1.2"/>
+          <text x="663" y="66" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#00e676">TAB C  —  DESTINATION</text>
+          <text x="562" y="86" font-size="8" fill="#f0f0f0">1. Announces via BroadcastChannel</text>
+          <text x="562" y="100" font-size="8" fill="#f0f0f0">2. Receives message from Tab B</text>
+          <text x="562" y="114" font-size="8" fill="#606070">   ttl:78, hops:2 → IndexedDB</text>
+          <text x="562" y="130" font-size="8" fill="#f0f0f0">3. Feed shows "RELAYED  2 HOPS"</text>
+          <text x="562" y="144" font-size="8" fill="#606070">   ← PROOF of A → B → C propagation</text>
+          <text x="562" y="160" font-size="8" fill="#f0f0f0">4. Connect screen shows mesh topology:</text>
+          <text x="562" y="174" font-size="8" fill="#606070">   [Node ABCD] — [Node EFGH] — [Node IJKL]</text>
+          <text x="562" y="190" font-size="8" fill="#f0f0f0">5. Tab C can relay further to Tab D...</text>
+          <text x="562" y="204" font-size="8" fill="#606070">   same QR process, ttl:77 hops:3</text>
+
+          <!-- BroadcastChannel band -->
+          <rect x="20" y="248" width="758" height="36" rx="8" fill="rgba(90,200,250,0.06)" stroke="rgba(90,200,250,0.2)" stroke-width="1"/>
+          <text x="399" y="261" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#7dd8ff">BroadcastChannel  'meshdrop-presence'  —  Discovery only (no data)</text>
+          <text x="399" y="276" text-anchor="middle" font-size="8" fill="#606070">Tabs post 'announce' messages → siblings receive → Add to "same-device peers" list in Connect screen</text>
+
+          <!-- WebRTC arrows between tabs -->
+          <line x1="250" y1="145" x2="282" y2="145" stroke="#ff4444" stroke-width="1.8" marker-end="url(#arr-bc-b)"/>
+          <text x="266" y="138" text-anchor="middle" font-size="7.5" fill="#606070">WebRTC</text>
+          <text x="266" y="149" text-anchor="middle" font-size="7" fill="#606070">DataChannel</text>
+
+          <line x1="514" y1="145" x2="546" y2="145" stroke="#6fa0ff" stroke-width="1.8" marker-end="url(#arr-bc-g)"/>
+          <text x="530" y="138" text-anchor="middle" font-size="7.5" fill="#606070">WebRTC</text>
+          <text x="530" y="149" text-anchor="middle" font-size="7" fill="#606070">DataChannel</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 14 — IndexedDB Schema
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 14</div>
+  <div class="section-title">IndexedDB Schema — Local Persistent Storage</div>
+  <div class="section-desc">TRINETRA uses two IndexedDB databases. Both survive page reloads, offline states, and browser restarts. Cryptographic keys are never stored here — RAM only.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 800 290" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:800px;">
+
+          <!-- DB 1: meshdrop-db -->
+          <rect x="14" y="10" width="460" height="270" rx="12" fill="rgba(90,200,250,0.05)" stroke="rgba(90,200,250,0.28)" stroke-width="1.5"/>
+          <text x="244" y="34" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#7dd8ff">meshdrop-db  (v3)</text>
+          <text x="244" y="48" text-anchor="middle" font-size="8.5" fill="#606070">Primary data store — messages and session key references</text>
+
+          <!-- messages store -->
+          <rect x="26" y="58" width="436" height="130" rx="8" fill="rgba(59,125,232,0.08)" stroke="rgba(59,125,232,0.28)" stroke-width="1.2"/>
+          <text x="60" y="76" font-size="9" font-weight="700" fill="#6fa0ff">Store: messages  (keyPath: 'id')</text>
+
+          <text x="40" y="94" font-size="8" fill="#606070">Index: type      → query by message category (emergency, alert, ...)</text>
+          <text x="40" y="108" font-size="8" fill="#606070">Index: createdAt → sort by recency, feed ordering</text>
+          <text x="40" y="122" font-size="8" fill="#606070">Index: priority  → relay ordering (high priority first in MSG_HAVE)</text>
+          <text x="40" y="136" font-size="8" fill="#606070">Index: expiresAt → scheduler queries expired messages every 5 min</text>
+          <text x="40" y="150" font-size="8" fill="#606070">Index: rootId    → find all revisions of the same logical message</text>
+          <text x="40" y="164" font-size="8" fill="#606070">Index: isCurrent → filter feed to show only latest revisions</text>
+          <text x="40" y="178" font-size="8" fill="#f0f0f0">All 7 indexes enable efficient query without full-table scan</text>
+
+          <!-- keys store -->
+          <rect x="26" y="200" width="436" height="68" rx="8" fill="rgba(175,82,222,0.08)" stroke="rgba(175,82,222,0.25)" stroke-width="1.2"/>
+          <text x="60" y="218" font-size="9" font-weight="700" fill="#c97fee">Store: keys  (keyPath: 'name')</text>
+          <text x="40" y="236" font-size="8" fill="#606070">'ecdh-private' → CryptoKey (ECDH P-256 private) — session only, never exported</text>
+          <text x="40" y="252" font-size="8" fill="#606070">'ecdh-public'  → CryptoKey (ECDH P-256 public)  — shared during key exchange</text>
+          <text x="40" y="265" font-size="8" fill="rgba(196,26,26,0.7)">Note: DM encryption keys (AES-256-GCM) are NEVER stored — RAM only</text>
+
+          <!-- DB 2: meshdrop-dm -->
+          <rect x="494" y="10" width="300" height="270" rx="12" fill="rgba(175,82,222,0.05)" stroke="rgba(175,82,222,0.28)" stroke-width="1.5"/>
+          <text x="644" y="34" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="11" font-weight="900" fill="#c97fee">meshdrop-dm</text>
+          <text x="644" y="48" text-anchor="middle" font-size="8.5" fill="#606070">Direct message history store</text>
+
+          <!-- dm-messages store -->
+          <rect x="506" y="58" width="276" height="160" rx="8" fill="rgba(175,82,222,0.08)" stroke="rgba(175,82,222,0.25)" stroke-width="1.2"/>
+          <text x="520" y="76" font-size="9" font-weight="700" fill="#c97fee">Store: dm-messages  (keyPath: 'id')</text>
+          <text x="520" y="94" font-size="8" fill="#606070">peerId     → sender/recipient session ID</text>
+          <text x="520" y="108" font-size="8" fill="#606070">direction  → 'in' | 'out'</text>
+          <text x="520" y="122" font-size="8" fill="#606070">encrypted  → boolean</text>
+          <text x="520" y="136" font-size="8" fill="#606070">ciphertext → base64 AES-GCM ciphertext</text>
+          <text x="520" y="150" font-size="8" fill="#606070">iv         → base64 initialisation vector</text>
+          <text x="520" y="164" font-size="8" fill="#606070">plaintext  → present only if NOT encrypted</text>
+          <text x="520" y="178" font-size="8" fill="#606070">timestamp  → unix ms</text>
+          <text x="520" y="194" font-size="8" fill="#606070">read       → boolean (unread badge counter)</text>
+          <text x="520" y="208" font-size="8" fill="#606070">Index: peerId → load conversation by peer</text>
+
+          <!-- DM wipe note -->
+          <rect x="506" y="228" width="276" height="40" rx="8" fill="rgba(196,26,26,0.08)" stroke="rgba(196,26,26,0.22)" stroke-width="1"/>
+          <text x="644" y="244" text-anchor="middle" font-size="8" fill="#ff6666">Emergency wipe deletes meshdrop-dm</text>
+          <text x="644" y="258" text-anchor="middle" font-size="8" fill="#606070">along with meshdrop-db and all caches</text>
+
+        </svg>
+      </div>
+
+      <div class="legend" style="margin-top:16px;">
+        <div class="legend-item"><div class="legend-dot" style="background:#7dd8ff"></div> meshdrop-db — messages + key refs</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#c97fee"></div> meshdrop-dm — DM history</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ff4444"></div> RAM-only data — never written to IndexedDB</div>
+        <div class="legend-item"><div class="legend-line" style="background:rgba(0,230,118,0.5)"></div> Emergency wipe destroys both databases</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DIAGRAM 15 — Message Lifecycle (Create → Relay → Expire)
+     ══════════════════════════════════════════════════════════════════ -->
+<div class="diagram-section">
+  <div class="section-label">Diagram 15</div>
+  <div class="section-title">Message Lifecycle — Create → Update → Relay → Expire</div>
+  <div class="section-desc">The complete journey of a single message bundle from composition on Device A through multi-hop relay, optional revision, and final self-destruction at expiry.</div>
+
+  <div class="diagram-card">
+    <div class="diagram-inner">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 820 200" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:820px;">
+          <defs>
+            <marker id="arr-lc" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(255,255,255,0.4)"/>
+            </marker>
+            <marker id="arr-lc-r" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#ff4444"/>
+            </marker>
+          </defs>
+
+          <!-- Stage 1: Compose -->
+          <rect x="10" y="60" width="120" height="80" rx="10" fill="rgba(196,26,26,0.1)" stroke="rgba(196,26,26,0.4)" stroke-width="1.5"/>
+          <text x="70" y="82" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#ff4444">1. COMPOSE</text>
+          <text x="70" y="98" text-anchor="middle" font-size="8" fill="#606070">ttl: 80</text>
+          <text x="70" y="112" text-anchor="middle" font-size="8" fill="#606070">hops: 0</text>
+          <text x="70" y="126" text-anchor="middle" font-size="8" fill="#606070">revision: 1</text>
+          <text x="70" y="140" text-anchor="middle" font-size="8" fill="#606070">localOwned: true</text>
+          <line x1="130" y1="100" x2="158" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" marker-end="url(#arr-lc)"/>
+
+          <!-- Stage 2: Stored -->
+          <rect x="160" y="60" width="120" height="80" rx="10" fill="rgba(90,200,250,0.08)" stroke="rgba(90,200,250,0.3)" stroke-width="1.5"/>
+          <text x="220" y="82" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#7dd8ff">2. STORED</text>
+          <text x="220" y="98" text-anchor="middle" font-size="8" fill="#606070">IndexedDB</text>
+          <text x="220" y="112" text-anchor="middle" font-size="8" fill="#606070">meshdrop-db</text>
+          <text x="220" y="126" text-anchor="middle" font-size="8" fill="#606070">isCurrent: true</text>
+          <text x="220" y="140" text-anchor="middle" font-size="8" fill="#606070">Feed renders it</text>
+          <line x1="280" y1="100" x2="308" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" marker-end="url(#arr-lc)"/>
+
+          <!-- Stage 3: Relay -->
+          <rect x="310" y="60" width="120" height="80" rx="10" fill="rgba(0,230,118,0.08)" stroke="rgba(0,230,118,0.3)" stroke-width="1.5"/>
+          <text x="370" y="82" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#00e676">3. RELAY</text>
+          <text x="370" y="98" text-anchor="middle" font-size="8" fill="#606070">ttl: 80 → 78</text>
+          <text x="370" y="112" text-anchor="middle" font-size="8" fill="#606070">hops: 0 → 2</text>
+          <text x="370" y="126" text-anchor="middle" font-size="8" fill="#606070">MSG_BUNDLES ×2</text>
+          <text x="370" y="140" text-anchor="middle" font-size="8" fill="#606070">A → B → C</text>
+          <line x1="430" y1="100" x2="458" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" marker-end="url(#arr-lc)"/>
+
+          <!-- Stage 4: Update (optional) -->
+          <rect x="460" y="60" width="120" height="80" rx="10" fill="rgba(240,165,0,0.08)" stroke="rgba(240,165,0,0.3)" stroke-width="1.5"/>
+          <text x="520" y="78" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#ffcc44">4. UPDATE</text>
+          <text x="520" y="90" text-anchor="middle" font-size="7.5" fill="#606070">(optional)</text>
+          <text x="520" y="106" text-anchor="middle" font-size="8" fill="#606070">revision: 2</text>
+          <text x="520" y="120" text-anchor="middle" font-size="8" fill="#606070">replaces: old-id</text>
+          <text x="520" y="134" text-anchor="middle" font-size="8" fill="#606070">Old → isCurrent:false</text>
+          <text x="520" y="148" text-anchor="middle" font-size="8" fill="#606070">Re-relays to peers</text>
+          <line x1="580" y1="100" x2="608" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" marker-end="url(#arr-lc)"/>
+
+          <!-- Stage 5: TTL reaches 0 OR expiresAt reached -->
+          <rect x="610" y="60" width="120" height="80" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+          <text x="670" y="82" text-anchor="middle" font-family="Arial Narrow,Impact,sans-serif" font-size="9" font-weight="900" fill="#f0f0f0">5. STOP RELAY</text>
+          <text x="670" y="98" text-anchor="middle" font-size="8" fill="#606070">ttl = 0 OR</text>
+          <text x="670" y="112" text-anchor="middle" font-size="8" fill="#606070">expiresAt &lt; now</text>
+          <text x="670" y="126" text-anchor="middle" font-size="8" fill="#606070">No more fanout</text>
+          <text x="670" y="140" text-anchor="middle" font-size="8" fill="#606070">Still in local DB</text>
+          <line x1="730" y1="100" x2="758" y2="100" stroke="rgba(196,26,26,0.5)" stroke-width="1.5" marker-end="url(#arr-lc-r)"/>
+
+          <!-- Stage 6: Delete -->
+          <rect x="760" y="60" width="50" height="80" rx="10" fill="rgba(196,26,26,0.1)" stroke="rgba(196,26,26,0.35)" stroke-width="1.5"/>
+          <text x="785" y="90" text-anchor="middle" font-size="8" fill="#ff4444">6.</text>
+          <text x="785" y="104" text-anchor="middle" font-size="8" fill="#ff4444">DELETE</text>
+          <text x="785" y="118" text-anchor="middle" font-size="7.5" fill="#606070">every</text>
+          <text x="785" y="130" text-anchor="middle" font-size="7.5" fill="#606070">5 min</text>
+
+          <!-- Timeline label -->
+          <text x="10" y="18" font-size="9" fill="#606070">T=0</text>
+          <line x1="10" y1="22" x2="810" y2="22" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="790" y="18" font-size="9" fill="#606070">T=expiresAt</text>
+          <text x="410" y="185" text-anchor="middle" font-size="9" fill="#606070">Message exists for its configured lifetime then self-destructs — no manual cleanup required</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Footer -->
+<div style="text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);">
+  <div style="font-family:'Arial Narrow',Impact,sans-serif;font-size:0.75rem;font-weight:900;letter-spacing:0.22em;color:rgba(255,255,255,0.2);">TRINETRA — SEE BEYOND THE BLACKOUT</div>
+  <div style="font-size:0.72rem;color:rgba(255,255,255,0.12);margin-top:4px;">Architecture Diagrams · Internal Reference</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>TRINETRA — ERROR 404 Presentation</title>
+<style>
+/* ── Reset & Base ───────────────────────────────── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;font-family:'Arial Narrow','Helvetica Neue',Arial,sans-serif;background:#040404;color:#f0f0f0}
+
+/* ── Design tokens ──────────────────────────────── */
+:root{
+  --red:#c41a1a;
+  --red-bright:#e02424;
+  --green:#00e676;
+  --amber:#f0a500;
+  --bg:#040404;
+  --bg-card:#0f0f0f;
+  --border:rgba(255,255,255,0.07);
+  --border-red:rgba(196,26,26,0.35);
+}
+
+/* ── Slide Container ────────────────────────────── */
+.deck{
+  width:100vw;height:100vh;
+  position:relative;overflow:hidden;
+}
+
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.55s ease, transform 0.55s ease;
+  transform:translateX(60px);
+  background:#040404;
+  overflow:hidden;
+}
+.slide.active{
+  opacity:1;pointer-events:all;
+  transform:translateX(0);
+}
+.slide.exit-left{
+  opacity:0;transform:translateX(-60px);
+}
+
+/* ── Global Header ──────────────────────────────── */
+.slide-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 32px;
+  border-bottom:1px solid var(--border-red);
+  background:rgba(4,4,4,0.96);
+  backdrop-filter:blur(8px);
+  z-index:10;flex-shrink:0;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo svg{width:36px;height:36px}
+.brand-wordmark{
+  font-size:1.25rem;font-weight:900;
+  letter-spacing:0.25em;color:#f0f0f0;
+  font-family:'Arial Narrow',Arial,sans-serif;
+}
+.brand-wordmark span{color:var(--red)}
+.slide-num{
+  font-size:0.7rem;letter-spacing:0.18em;
+  color:rgba(255,255,255,0.25);
+}
+.header-tag{
+  font-size:0.65rem;letter-spacing:0.2em;
+  color:var(--red);opacity:0.7;
+  margin-top:2px;
+}
+
+/* ── Grid lines background ──────────────────────── */
+.grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(196,26,26,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,26,26,0.04) 1px, transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;z-index:0;
+}
+
+/* ── Slide body ─────────────────────────────────── */
+.slide-body{
+  flex:1;display:flex;
+  position:relative;z-index:1;
+  overflow:hidden;
+}
+
+/* ══════════════════════════════════════════════════
+   SLIDE 1 — TITLE
+══════════════════════════════════════════════════ */
+#s1 .slide-body{
+  align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+}
+.title-glow-ring{
+  position:absolute;
+  width:520px;height:520px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(196,26,26,0.12) 0%, transparent 70%);
+  pointer-events:none;
+}
+.title-logo-wrap{
+  display:flex;flex-direction:column;align-items:center;
+  gap:0;position:relative;z-index:2;
+}
+.title-logo-svg{
+  width:160px;height:160px;
+  filter:drop-shadow(0 0 32px rgba(196,26,26,0.6));
+  animation:logo-pulse 3s ease-in-out infinite;
+}
+@keyframes logo-pulse{
+  0%,100%{filter:drop-shadow(0 0 28px rgba(196,26,26,0.5))}
+  50%{filter:drop-shadow(0 0 52px rgba(196,26,26,0.85))}
+}
+.title-word{
+  font-size:5.5rem;font-weight:900;
+  letter-spacing:0.35em;
+  background:linear-gradient(135deg,#fff 40%,var(--red) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  font-family:'Arial Narrow',Arial,sans-serif;
+  line-height:1;margin-top:-8px;
+}
+.title-tagline{
+  font-size:0.85rem;letter-spacing:0.35em;
+  color:rgba(255,255,255,0.35);margin-top:12px;
+}
+.title-tagline span{color:var(--green)}
+.title-divider{
+  width:120px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--red),transparent);
+  margin:28px 0;
+}
+.title-team-badge{
+  display:flex;align-items:center;gap:14px;
+}
+.team-label{
+  font-size:0.65rem;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.3);
+}
+.team-name{
+  font-size:1.1rem;font-weight:900;letter-spacing:0.2em;
+  color:#f0f0f0;
+  border:1px solid var(--border-red);
+  padding:6px 18px;border-radius:4px;
+  background:rgba(196,26,26,0.08);
+}
+.title-orbit{
+  position:absolute;border-radius:50%;border:1px solid rgba(196,26,26,0.15);
+  pointer-events:none;
+}
+.orbit-1{width:220px;height:220px;animation:spin 18s linear infinite}
+.orbit-2{width:310px;height:310px;animation:spin 28s linear infinite reverse}
+.orbit-3{width:420px;height:420px;animation:spin 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.orbit-dot{
+  position:absolute;top:0;left:50%;
+  width:5px;height:5px;border-radius:50%;
+  background:var(--red);margin-left:-2.5px;margin-top:-2.5px;
+  box-shadow:0 0 8px var(--red);
+}
+
+/* ══════════════════════════════════════════════════
+   SLIDE 2 — PROBLEM STATEMENT
+══════════════════════════════════════════════════ */
+#s2 .slide-body{flex-direction:row}
+.ps-left{
+  flex:1;display:flex;flex-direction:column;
+  justify-content:center;padding:48px 40px 48px 48px;
+  gap:24px;
+}
+.ps-eyebrow{
+  font-size:0.65rem;letter-spacing:0.25em;color:var(--red);
+  text-transform:uppercase;
+}
+.ps-heading{
+  font-size:3rem;font-weight:900;line-height:1.1;
+  font-family:'Arial Narrow',Arial,sans-serif;
+}
+.ps-heading .accent{
+  background:linear-gradient(90deg,var(--red),var(--red-bright));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.ps-stats{
+  display:flex;flex-direction:column;gap:12px;margin-top:8px;
+}
+.ps-stat-row{
+  display:flex;align-items:center;gap:12px;
+}
+.ps-stat-icon{
+  width:36px;height:36px;border-radius:8px;
+  background:rgba(196,26,26,0.1);border:1px solid rgba(196,26,26,0.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;flex-shrink:0;
+}
+.ps-stat-text{font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.4}
+.ps-stat-text strong{color:#f0f0f0}
+
+.ps-right{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.ps-visual{
+  position:relative;width:360px;height:360px;
+}
+.ps-globe{
+  width:280px;height:280px;
+  border-radius:50%;
+  border:2px solid rgba(196,26,26,0.3);
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle at 35% 35%, rgba(196,26,26,0.08), transparent 60%);
+  box-shadow:0 0 60px rgba(196,26,26,0.15),inset 0 0 40px rgba(196,26,26,0.05);
+}
+.ps-x-line{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:200px;height:200px;
+}
+.ps-x-line::before,.ps-x-line::after{
+  content:'';position:absolute;inset:0;
+  border:1px dashed rgba(196,26,26,0.2);
+  border-radius:50%;
+}
+.ps-x-line::after{transform:rotate(45deg)}
+.blackout-text{
+  position:absolute;
+  font-size:0.6rem;letter-spacing:0.2em;
+  color:rgba(196,26,26,0.5);
+  font-weight:700;text-transform:uppercase;
+}
+.bt1{top:18%;left:50%;transform:translateX(-50%)}
+.bt2{bottom:18%;left:50%;transform:translateX(-50%)}
+.bt3{left:8%;top:50%;transform:translateY(-50%)}
+.bt4{right:8%;top:50%;transform:translateY(-50%)}
+.no-signal-ring{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:320px;height:320px;
+  border-radius:50%;
+  border:1px solid rgba(196,26,26,0.1);
+  animation:ring-pulse 2.5s ease-in-out infinite;
+}
+.no-signal-ring2{animation-delay:0.8s}
+@keyframes ring-pulse{
+  0%{transform:translate(-50%,-50%) scale(0.9);opacity:0.6}
+  50%{transform:translate(-50%,-50%) scale(1.05);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(0.9);opacity:0.6}
+}
+.slash-icon{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:5rem;opacity:0.15;color:var(--red);
+}
+
+/* ══════════════════════════════════════════════════
+   SLIDE 3 — SOLUTION
+══════════════════════════════════════════════════ */
+#s3 .slide-body{flex-direction:column;padding:32px 48px;gap:28px}
+.sol-heading{
+  font-size:2.4rem;font-weight:900;
+  font-family:'Arial Narrow',Arial,sans-serif;
+  letter-spacing:0.05em;
+}
+.sol-heading .accent{color:var(--green)}
+.sol-sub{font-size:0.85rem;color:rgba(255,255,255,0.45);letter-spacing:0.08em;margin-top:4px}
+.sol-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:16px;flex:1;
+}
+.sol-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:12px;padding:24px 20px;
+  display:flex;flex-direction:column;gap:12px;
+  position:relative;overflow:hidden;
+  transition:border-color 0.2s;
+}
+.sol-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent, var(--red)),transparent);
+  opacity:0.6;
+}
+.sol-card.green{--accent:var(--green)}
+.sol-card.amber{--accent:var(--amber)}
+.sol-icon{
+  width:48px;height:48px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+  background:rgba(196,26,26,0.08);
+  border:1px solid rgba(196,26,26,0.15);
+}
+.sol-card.green .sol-icon{background:rgba(0,230,118,0.08);border-color:rgba(0,230,118,0.15)}
+.sol-card.amber .sol-icon{background:rgba(240,165,0,0.08);border-color:rgba(240,165,0,0.15)}
+.sol-card-title{font-size:0.9rem;font-weight:700;letter-spacing:0.05em}
+.sol-card-desc{font-size:0.75rem;color:rgba(255,255,255,0.5);line-height:1.5}
+.sol-tagline{
+  text-align:center;
+  font-size:1rem;letter-spacing:0.3em;
+  color:rgba(255,255,255,0.2);
+  border-top:1px solid var(--border);
+  padding-top:16px;
+}
+.sol-tagline span{color:var(--green)}
+
+/* ══════════════════════════════════════════════════
+   SLIDE 4 — ARCHITECTURE
+══════════════════════════════════════════════════ */
+#s4 .slide-body{flex-direction:column;padding:28px 48px;gap:20px}
+.arch-heading{
+  font-size:2.2rem;font-weight:900;
+  font-family:'Arial Narrow',Arial,sans-serif;
+}
+.arch-heading .accent{color:var(--red)}
+.arch-main{flex:1;display:flex;gap:20px}
+.arch-diagram{
+  flex:1.4;display:flex;align-items:center;justify-content:center;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:12px;position:relative;overflow:hidden;padding:24px;
+}
+.arch-diagram-inner{
+  width:100%;height:100%;position:relative;
+}
+/* Nodes */
+.anode{
+  position:absolute;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  z-index:2;
+}
+.anode-circle{
+  width:52px;height:52px;border-radius:50%;
+  border:2px solid var(--node-color, var(--red));
+  background:rgba(0,0,0,0.5);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;
+  box-shadow:0 0 16px var(--node-glow, rgba(196,26,26,0.3));
+  position:relative;
+}
+.anode-circle::after{
+  content:'';position:absolute;inset:-6px;border-radius:50%;
+  border:1px solid var(--node-color, var(--red));
+  opacity:0.2;animation:ring-pulse 2s ease-in-out infinite;
+}
+.anode-label{font-size:0.58rem;letter-spacing:0.15em;color:rgba(255,255,255,0.5);text-transform:uppercase}
+
+/* svg lines for architecture */
+.arch-svg{
+  position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
+  z-index:1;
+}
+.arch-line{stroke:rgba(196,26,26,0.35);stroke-width:1.5;stroke-dasharray:6 4;animation:dash-flow 2s linear infinite}
+.arch-line.green{stroke:rgba(0,230,118,0.35)}
+@keyframes dash-flow{to{stroke-dashoffset:-20}}
+
+.arch-center-label{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;z-index:3;
+}
+.arch-center-label span{
+  font-size:0.6rem;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.2);display:block;
+}
+.arch-center-icon{font-size:2rem;color:rgba(196,26,26,0.3)}
+
+.arch-right{
+  flex:1;display:flex;flex-direction:column;gap:12px;justify-content:center;
+}
+.arch-step{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:8px;padding:14px;
+}
+.arch-step-num{
+  font-size:1.2rem;font-weight:900;color:var(--red);
+  flex-shrink:0;line-height:1;font-family:'Arial Narrow',Arial,sans-serif;
+}
+.arch-step-content{display:flex;flex-direction:column;gap:3px}
+.arch-step-title{font-size:0.8rem;font-weight:700;letter-spacing:0.05em}
+.arch-step-desc{font-size:0.68rem;color:rgba(255,255,255,0.4);line-height:1.4}
+
+/* QR handshake visual */
+.qr-mini{
+  width:40px;height:40px;border-radius:4px;
+  background:repeating-linear-gradient(45deg,rgba(196,26,26,0.15) 0px, rgba(196,26,26,0.15) 4px, transparent 4px, transparent 8px);
+  border:1px solid rgba(196,26,26,0.25);flex-shrink:0;
+}
+
+/* ══════════════════════════════════════════════════
+   SLIDE 5 — FEATURES
+══════════════════════════════════════════════════ */
+#s5 .slide-body{flex-direction:column;padding:28px 48px;gap:20px}
+.feat-heading{
+  font-size:2.2rem;font-weight:900;
+  font-family:'Arial Narrow',Arial,sans-serif;
+}
+.feat-heading .accent{color:var(--green)}
+.feat-grid{
+  flex:1;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  grid-template-rows:1fr 1fr;
+  gap:12px;
+}
+.feat-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:10px;padding:18px 16px;
+  display:flex;flex-direction:column;gap:8px;
+  position:relative;overflow:hidden;
+}
+.feat-card.span2{grid-column:span 2}
+.feat-card.red-accent{border-color:rgba(196,26,26,0.25)}
+.feat-card.green-accent{border-color:rgba(0,230,118,0.2)}
+.feat-card.amber-accent{border-color:rgba(240,165,0,0.2)}
+.feat-card-icon{font-size:1.8rem;line-height:1}
+.feat-card-name{font-size:0.85rem;font-weight:700;letter-spacing:0.05em}
+.feat-card-desc{font-size:0.7rem;color:rgba(255,255,255,0.45);line-height:1.5}
+.feat-pill{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:0.58rem;letter-spacing:0.1em;
+  border-radius:4px;padding:2px 7px;
+  font-weight:700;text-transform:uppercase;
+  width:fit-content;
+}
+.pill-red{background:rgba(196,26,26,0.15);color:var(--red);border:1px solid rgba(196,26,26,0.2)}
+.pill-green{background:rgba(0,230,118,0.1);color:var(--green);border:1px solid rgba(0,230,118,0.15)}
+.pill-amber{background:rgba(240,165,0,0.1);color:var(--amber);border:1px solid rgba(240,165,0,0.15)}
+
+/* Big SOS card visual */
+.sos-big-btn{
+  width:80px;height:80px;border-radius:50%;
+  border:3px solid var(--red);
+  background:rgba(196,26,26,0.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;font-weight:900;letter-spacing:0.2em;color:var(--red);
+  position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  box-shadow:0 0 24px rgba(196,26,26,0.3);
+  animation:sos-pulse 1.5s ease-in-out infinite;
+}
+@keyframes sos-pulse{
+  0%,100%{box-shadow:0 0 20px rgba(196,26,26,0.3)}
+  50%{box-shadow:0 0 40px rgba(196,26,26,0.6)}
+}
+
+/* Mesh visual in feature card */
+.mesh-mini{position:relative;height:60px;margin-top:4px}
+.m-node{
+  position:absolute;width:12px;height:12px;border-radius:50%;
+  background:var(--green);opacity:0.7;
+}
+.m-node::after{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:1px solid var(--green);opacity:0.3;
+}
+
+/* ══════════════════════════════════════════════════
+   SLIDE 6 — TECH STACK
+══════════════════════════════════════════════════ */
+#s6 .slide-body{flex-direction:row}
+.tech-left{
+  flex:1;display:flex;flex-direction:column;
+  justify-content:center;padding:40px 36px 40px 48px;gap:20px;
+}
+.tech-heading{
+  font-size:2.4rem;font-weight:900;
+  font-family:'Arial Narrow',Arial,sans-serif;
+}
+.tech-heading .accent{color:var(--amber)}
+.tech-philosophy{
+  font-size:0.85rem;color:rgba(255,255,255,0.4);
+  line-height:1.6;max-width:340px;
+  border-left:2px solid var(--red);padding-left:14px;
+}
+.tech-badges{
+  display:flex;flex-wrap:wrap;gap:8px;
+}
+.tech-badge{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid var(--border);border-radius:6px;
+  padding:7px 12px;font-size:0.7rem;font-weight:700;
+  letter-spacing:0.06em;color:rgba(255,255,255,0.7);
+  background:rgba(255,255,255,0.03);
+}
+.tech-badge .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--dot-color,var(--red));flex-shrink:0;
+}
+.no-fw-badge{
+  display:flex;align-items:center;gap:8px;
+  margin-top:4px;
+  background:rgba(196,26,26,0.07);
+  border:1px solid rgba(196,26,26,0.2);
+  border-radius:8px;padding:12px 16px;
+  font-size:0.8rem;color:rgba(255,255,255,0.6);
+}
+.no-fw-badge .big{font-size:1.5rem;line-height:1}
+
+.tech-right{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  position:relative;padding:32px;
+}
+.tech-wheel{
+  position:relative;width:320px;height:320px;
+}
+.wheel-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(196,26,26,0.1);border:2px solid rgba(196,26,26,0.35);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.55rem;letter-spacing:0.2em;color:var(--red);font-weight:700;
+  text-align:center;line-height:1.3;
+  box-shadow:0 0 32px rgba(196,26,26,0.2);
+  z-index:3;
+}
+.wheel-ring{
+  position:absolute;top:50%;left:50%;
+  border-radius:50%;border:1px solid rgba(196,26,26,0.1);
+  transform:translate(-50%,-50%);
+}
+.wheel-ring-1{width:140px;height:140px}
+.wheel-ring-2{width:230px;height:230px;border-style:dashed}
+.wheel-ring-3{width:320px;height:320px}
+.wheel-item{
+  position:absolute;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  transform:translate(-50%,-50%);
+  z-index:2;
+}
+.wheel-item-icon{
+  width:44px;height:44px;border-radius:10px;
+  background:var(--bg-card);border:1px solid var(--border-red);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;
+}
+.wheel-item-label{
+  font-size:0.55rem;letter-spacing:0.1em;
+  color:rgba(255,255,255,0.4);text-transform:uppercase;
+  white-space:nowrap;
+}
+/* lines from center to wheel items */
+.wheel-svg{
+  position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
+}
+.wline{stroke:rgba(196,26,26,0.15);stroke-width:1;stroke-dasharray:4 3}
+
+/* ══════════════════════════════════════════════════
+   SLIDE 7 — FUTURE ENHANCEMENTS
+══════════════════════════════════════════════════ */
+#s7 .slide-body{flex-direction:column;padding:32px 48px;gap:24px}
+.future-heading{
+  font-size:2.2rem;font-weight:900;
+  font-family:'Arial Narrow',Arial,sans-serif;
+}
+.future-heading .accent{color:var(--green)}
+.future-grid{
+  flex:1;display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+.future-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:12px;padding:24px;
+  display:flex;gap:18px;align-items:flex-start;
+  position:relative;overflow:hidden;
+}
+.future-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--card-accent,var(--green)),transparent);
+  opacity:0.4;
+}
+.future-card.c1{--card-accent:var(--green)}
+.future-card.c2{--card-accent:var(--amber)}
+.future-card.c3{--card-accent:#3b7de8}
+.future-card.c4{--card-accent:var(--red)}
+.future-icon{
+  width:56px;height:56px;border-radius:12px;flex-shrink:0;
+  background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.15);
+  display:flex;align-items:center;justify-content:center;font-size:1.6rem;
+}
+.future-card.c2 .future-icon{background:rgba(240,165,0,0.06);border-color:rgba(240,165,0,0.15)}
+.future-card.c3 .future-icon{background:rgba(59,125,232,0.06);border-color:rgba(59,125,232,0.15)}
+.future-card.c4 .future-icon{background:rgba(196,26,26,0.06);border-color:rgba(196,26,26,0.15)}
+.future-content{display:flex;flex-direction:column;gap:6px}
+.future-title{font-size:1rem;font-weight:700;letter-spacing:0.03em}
+.future-desc{font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.55}
+.future-status{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:0.6rem;letter-spacing:0.15em;color:var(--green);
+  font-weight:700;margin-top:4px;
+}
+.future-card.c2 .future-status{color:var(--amber)}
+.future-card.c3 .future-status{color:#3b7de8}
+.future-card.c4 .future-status{color:var(--red)}
+.future-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:currentColor;animation:blink 1.4s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.future-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid var(--border);padding-top:16px;
+}
+.future-strap{
+  font-size:0.7rem;letter-spacing:0.25em;color:rgba(255,255,255,0.2);
+}
+.future-logo-small{display:flex;align-items:center;gap:8px}
+.future-logo-small svg{width:24px;height:24px;opacity:0.4}
+.future-logo-small span{font-size:0.65rem;letter-spacing:0.2em;color:rgba(255,255,255,0.2)}
+
+/* ── Navigation Controls ──────────────────────── */
+.nav-controls{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:12px;z-index:100;
+}
+.nav-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.12);
+  color:#f0f0f0;font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.nav-btn:hover{background:rgba(196,26,26,0.15);border-color:rgba(196,26,26,0.4)}
+.nav-btn:disabled{opacity:0.2;cursor:not-allowed}
+.nav-dots{display:flex;gap:6px}
+.nav-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  cursor:pointer;transition:all 0.2s;
+}
+.nav-dot.active{background:var(--red);width:20px;border-radius:3px}
+.nav-hint{
+  position:fixed;bottom:24px;right:32px;
+  font-size:0.6rem;letter-spacing:0.15em;color:rgba(255,255,255,0.15);
+}
+
+/* ── Scanline overlay ─────────────────────────── */
+.scanline{
+  position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,0.03) 0px,rgba(0,0,0,0.03) 1px,transparent 1px,transparent 3px);
+}
+
+/* ── Corner decorations ───────────────────────── */
+.corner{position:absolute;width:16px;height:16px;pointer-events:none}
+.corner.tl{top:0;left:0;border-top:1px solid var(--red);border-left:1px solid var(--red)}
+.corner.tr{top:0;right:0;border-top:1px solid var(--red);border-right:1px solid var(--red)}
+.corner.bl{bottom:0;left:0;border-bottom:1px solid var(--red);border-left:1px solid var(--red)}
+.corner.br{bottom:0;right:0;border-bottom:1px solid var(--red);border-right:1px solid var(--red)}
+</style>
+</head>
+<body>
+
+<div class="scanline"></div>
+
+<div class="deck" id="deck">
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 1 — TITLE
+══════════════════════════════════════════════ -->
+<div class="slide active" id="s1">
+  <div class="grid-bg"></div>
+  <div class="slide-body">
+    <div class="title-glow-ring"></div>
+
+    <div class="title-logo-wrap">
+      <!-- Orbiting rings -->
+      <span class="title-orbit orbit-1" style="position:absolute"><span class="orbit-dot"></span></span>
+      <span class="title-orbit orbit-2" style="position:absolute"><span class="orbit-dot" style="background:rgba(196,26,26,0.5)"></span></span>
+      <span class="title-orbit orbit-3" style="position:absolute"><span class="orbit-dot" style="background:rgba(196,26,26,0.3)"></span></span>
+
+      <!-- Logo SVG -->
+      <svg class="title-logo-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <polygon points="60,7 113,100 7,100" fill="rgba(196,26,26,0.07)" stroke="#c41a1a" stroke-width="2.8" stroke-linejoin="round" filter="url(#glow)"/>
+        <polygon points="60,26 94,88 26,88" fill="none" stroke="rgba(196,26,26,0.4)" stroke-width="1.5" stroke-linejoin="round"/>
+        <line x1="60" y1="26" x2="60" y2="42" stroke="rgba(196,26,26,0.3)" stroke-width="1"/>
+        <ellipse cx="60" cy="70" rx="14" ry="10" fill="none" stroke="#c41a1a" stroke-width="1.8" filter="url(#glow)"/>
+        <circle cx="60" cy="70" r="5.5" fill="#c41a1a" filter="url(#glow)"/>
+        <circle cx="62.5" cy="67.5" r="2" fill="rgba(255,255,255,0.55)"/>
+        <line x1="30" y1="70" x2="43" y2="70" stroke="rgba(196,26,26,0.45)" stroke-width="1.2"/>
+        <line x1="77" y1="70" x2="90" y2="70" stroke="rgba(196,26,26,0.45)" stroke-width="1.2"/>
+        <circle cx="60" cy="26" r="2.5" fill="rgba(196,26,26,0.7)"/>
+        <circle cx="26" cy="88" r="2.5" fill="rgba(196,26,26,0.7)"/>
+        <circle cx="94" cy="88" r="2.5" fill="rgba(196,26,26,0.7)"/>
+      </svg>
+
+      <div class="title-word">TRINETRA</div>
+      <div class="title-tagline">SEE BEYOND THE <span>BLACKOUT</span></div>
+    </div>
+
+    <div class="title-divider"></div>
+
+    <div class="title-team-badge">
+      <span class="team-label">PRESENTED BY</span>
+      <div class="team-name">ERROR 404</div>
+    </div>
+  </div>
+
+  <!-- corner decorations -->
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 2 — PROBLEM STATEMENT
+══════════════════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="grid-bg"></div>
+  <header class="slide-header">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="60,7 113,100 7,100" fill="rgba(196,26,26,0.07)" stroke="#c41a1a" stroke-width="2.8" stroke-linejoin="round"/>
+          <ellipse cx="60" cy="70" rx="14" ry="10" fill="none" stroke="#c41a1a" stroke-width="1.8"/>
+          <circle cx="60" cy="70" r="5.5" fill="#c41a1a"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-wordmark">TRINE<span>T</span>RA</div>
+        <div class="header-tag">ERROR 404</div>
+      </div>
+    </div>
+    <div class="slide-num">02 / 07 — PROBLEM STATEMENT</div>
+  </header>
+  <div class="slide-body">
+    <div class="ps-left">
+      <div class="ps-eyebrow">THE CHALLENGE</div>
+      <div class="ps-heading">
+        When Networks<br>
+        <span class="accent">Go Dark</span>
+      </div>
+      <div class="ps-stats">
+        <div class="ps-stat-row">
+          <div class="ps-stat-icon">🌐</div>
+          <div class="ps-stat-text"><strong>Internet shutdowns</strong> are used by authoritarian regimes to silence dissent and isolate populations</div>
+        </div>
+        <div class="ps-stat-row">
+          <div class="ps-stat-icon">📡</div>
+          <div class="ps-stat-text"><strong>Cellular & Wi-Fi blackouts</strong> leave emergency responders and civilians unable to coordinate</div>
+        </div>
+        <div class="ps-stat-row">
+          <div class="ps-stat-icon">🏥</div>
+          <div class="ps-stat-text"><strong>No real-time info</strong> — safe routes, shelter locations, medical aid remain unknown in crisis zones</div>
+        </div>
+        <div class="ps-stat-row">
+          <div class="ps-stat-icon">☁️</div>
+          <div class="ps-stat-text"><strong>Cloud-dependent apps</strong> fail the moment connectivity is cut — exactly when they're needed most</div>
+        </div>
+      </div>
+    </div>
+    <div class="ps-right">
+      <div class="ps-visual">
+        <div class="no-signal-ring"></div>
+        <div class="no-signal-ring no-signal-ring2"></div>
+        <div class="ps-globe"></div>
+        <div class="ps-x-line"></div>
+        <div class="slash-icon">⚡</div>
+        <div class="blackout-text bt1">NO SIGNAL</div>
+        <div class="blackout-text bt2">BLACKOUT</div>
+        <div class="blackout-text bt3">OFFLINE</div>
+        <div class="blackout-text bt4">ISOLATED</div>
+      </div>
+    </div>
+  </div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 3 — SOLUTION
+══════════════════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="grid-bg"></div>
+  <header class="slide-header">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="60,7 113,100 7,100" fill="rgba(196,26,26,0.07)" stroke="#c41a1a" stroke-width="2.8" stroke-linejoin="round"/>
+          <ellipse cx="60" cy="70" rx="14" ry="10" fill="none" stroke="#c41a1a" stroke-width="1.8"/>
+          <circle cx="60" cy="70" r="5.5" fill="#c41a1a"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-wordmark">TRINE<span>T</span>RA</div>
+        <div class="header-tag">ERROR 404</div>
+      </div>
+    </div>
+    <div class="slide-num">03 / 07 — SOLUTION</div>
+  </header>
+  <div class="slide-body">
+    <div style="padding:28px 48px 0;width:100%;display:flex;flex-direction:column;gap:20px;flex:1">
+      <div>
+        <div class="sol-heading">The <span class="accent">Mesh</span> That Doesn't Need The Internet</div>
+        <div class="sol-sub">A fully offline PWA — no server, no cloud, no cellular required</div>
+      </div>
+      <div class="sol-grid">
+        <div class="sol-card green">
+          <div class="sol-icon">🔗</div>
+          <div class="sol-card-title">PEER-TO-PEER FIRST</div>
+          <div class="sol-card-desc">Devices connect directly over LAN via WebRTC. No signalling server. The handshake happens through QR codes scanned between phones.</div>
+        </div>
+        <div class="sol-card">
+          <div class="sol-icon">📶</div>
+          <div class="sol-card-title">MESH RELAY</div>
+          <div class="sol-card-desc">A message from Device A reaches Device C through Device B — multi-hop propagation without any central coordinator.</div>
+        </div>
+        <div class="sol-card amber">
+          <div class="sol-icon">💾</div>
+          <div class="sol-card-title">OFFLINE STORAGE</div>
+          <div class="sol-card-desc">All data lives in IndexedDB on-device. Messages auto-expire via TTL. Nothing leaves the device unless you choose to share it.</div>
+        </div>
+        <div class="sol-card">
+          <div class="sol-icon">📷</div>
+          <div class="sol-card-title">QR TRANSPORT</div>
+          <div class="sol-card-desc">No Wi-Fi? No problem. Scan a QR code to transfer messages between devices — just two phones and a camera.</div>
+        </div>
+        <div class="sol-card green">
+          <div class="sol-icon">🔒</div>
+          <div class="sol-card-title">ENCRYPTED DMs</div>
+          <div class="sol-card-desc">End-to-end encrypted 1-on-1 messaging using ECDH key exchange over the WebRTC data channel.</div>
+        </div>
+        <div class="sol-card">
+          <div class="sol-icon">🗺️</div>
+          <div class="sol-card-title">OFFLINE MAPS</div>
+          <div class="sol-card-desc">Pin safe routes, hazards, and shelters on a fully offline Leaflet map. Export and share location data via QR or peer sync.</div>
+        </div>
+      </div>
+      <div class="sol-tagline">NO SERVERS · NO BACKEND · NO CELLULAR · JUST <span>MESH</span></div>
+    </div>
+  </div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 4 — ARCHITECTURE
+══════════════════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="grid-bg"></div>
+  <header class="slide-header">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="60,7 113,100 7,100" fill="rgba(196,26,26,0.07)" stroke="#c41a1a" stroke-width="2.8" stroke-linejoin="round"/>
+          <ellipse cx="60" cy="70" rx="14" ry="10" fill="none" stroke="#c41a1a" stroke-width="1.8"/>
+          <circle cx="60" cy="70" r="5.5" fill="#c41a1a"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-wordmark">TRINE<span>T</span>RA</div>
+        <div class="header-tag">ERROR 404</div>
+      </div>
+    </div>
+    <div class="slide-num">04 / 07 — ARCHITECTURE</div>
+  </header>
+  <div class="slide-body">
+    <div style="padding:20px 48px 28px;width:100%;display:flex;flex-direction:column;gap:16px;flex:1">
+      <div class="arch-heading">System <span class="accent">Architecture</span></div>
+      <div class="arch-main">
+
+        <!-- Diagram -->
+        <div class="arch-diagram">
+          <div class="arch-diagram-inner">
+            <svg class="arch-svg" viewBox="0 0 500 320" preserveAspectRatio="xMidYMid meet">
+              <!-- Node A to Center -->
+              <line class="arch-line" x1="80" y1="80" x2="250" y2="160"/>
+              <!-- Node B to Center -->
+              <line class="arch-line" x1="420" y1="80" x2="250" y2="160"/>
+              <!-- Node C to Center -->
+              <line class="arch-line green" x1="80" y1="250" x2="250" y2="160"/>
+              <!-- Node D to Center -->
+              <line class="arch-line green" x1="420" y1="250" x2="250" y2="160"/>
+              <!-- A to B direct (dashed) -->
+              <line class="arch-line" x1="80" y1="80" x2="420" y2="80" stroke-dasharray="3 6" opacity="0.3"/>
+              <!-- C to D relay -->
+              <line class="arch-line green" x1="80" y1="250" x2="420" y2="250" stroke-dasharray="3 6" opacity="0.3"/>
+            </svg>
+
+            <!-- Nodes -->
+            <div class="anode" style="left:80px;top:80px;transform:translate(-50%,-50%)">
+              <div class="anode-circle" style="--node-color:#c41a1a;--node-glow:rgba(196,26,26,0.3)">📱</div>
+              <div class="anode-label">Device A</div>
+            </div>
+            <div class="anode" style="right:80px;top:80px;transform:translate(50%,-50%)">
+              <div class="anode-circle" style="--node-color:#c41a1a;--node-glow:rgba(196,26,26,0.3)">💻</div>
+              <div class="anode-label">Device B</div>
+            </div>
+            <div class="anode" style="left:80px;bottom:60px;transform:translate(-50%,50%)">
+              <div class="anode-circle" style="--node-color:#00e676;--node-glow:rgba(0,230,118,0.3)">📱</div>
+              <div class="anode-label">Device C</div>
+            </div>
+            <div class="anode" style="right:80px;bottom:60px;transform:translate(50%,50%)">
+              <div class="anode-circle" style="--node-color:#00e676;--node-glow:rgba(0,230,118,0.3)">📟</div>
+              <div class="anode-label">Device D</div>
+            </div>
+
+            <!-- Center mesh node -->
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4">
+              <div style="width:64px;height:64px;border-radius:50%;background:rgba(196,26,26,0.15);border:2px solid #c41a1a;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 0 32px rgba(196,26,26,0.3)">🕸️</div>
+            </div>
+
+            <!-- QR badge -->
+            <div style="position:absolute;bottom:12px;right:12px;display:flex;align-items:center;gap:6px;background:rgba(196,26,26,0.08);border:1px solid rgba(196,26,26,0.2);border-radius:6px;padding:6px 10px">
+              <div class="qr-mini" style="width:28px;height:28px"></div>
+              <span style="font-size:0.6rem;letter-spacing:0.1em;color:rgba(255,255,255,0.4)">QR HANDSHAKE</span>
+            </div>
+
+            <!-- IndexedDB badge -->
+            <div style="position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:6px;background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.15);border-radius:6px;padding:6px 10px">
+              <span style="font-size:0.8rem">💾</span>
+              <span style="font-size:0.6rem;letter-spacing:0.1em;color:rgba(0,230,118,0.6)">IndexedDB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Steps -->
+        <div class="arch-right">
+          <div class="arch-step">
+            <div class="arch-step-num">01</div>
+            <div class="arch-step-content">
+              <div class="arch-step-title">QR CODE HANDSHAKE</div>
+              <div class="arch-step-desc">Device A encodes its SDP offer into a QR code. Device B scans it and generates an answer QR. No signalling server needed.</div>
+            </div>
+          </div>
+          <div class="arch-step">
+            <div class="arch-step-num">02</div>
+            <div class="arch-step-content">
+              <div class="arch-step-title">WebRTC DATA CHANNEL</div>
+              <div class="arch-step-desc">Once the handshake completes, a direct RTCDataChannel opens between peers on the local network for real-time messaging.</div>
+            </div>
+          </div>
+          <div class="arch-step">
+            <div class="arch-step-num">03</div>
+            <div class="arch-step-content">
+              <div class="arch-step-title">MESH RELAY PROPAGATION</div>
+              <div class="arch-step-desc">Messages carry TTL, revision, and hop-count metadata. Each peer relays to its connected nodes — forming a multi-hop mesh.</div>
+            </div>
+          </div>
+          <div class="arch-step">
+            <div class="arch-step-num">04</div>
+            <div class="arch-step-content">
+              <div class="arch-step-title">IndexedDB PERSISTENCE</div>
+              <div class="arch-step-desc">All messages, keys, contacts, and map pins are stored locally. Conflict resolution uses revision numbers — highest revision wins.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 5 — FEATURES
+══════════════════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="grid-bg"></div>
+  <header class="slide-header">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="60,7 113,100 7,100" fill="rgba(196,26,26,0.07)" stroke="#c41a1a" stroke-width="2.8" stroke-linejoin="round"/>
+          <ellipse cx="60" cy="70" rx="14" ry="10" fill="none" stroke="#c41a1a" stroke-width="1.8"/>
+          <circle cx="60" cy="70" r="5.5" fill="#c41a1a"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-wordmark">TRINE<span>T</span>RA</div>
+        <div class="header-tag">ERROR 404</div>
+      </div>
+    </div>
+    <div class="slide-num">05 / 07 — FEATURES</div>
+  </header>
+  <div class="slide-body">
+    <div style="padding:20px 48px 28px;width:100%;display:flex;flex-direction:column;gap:16px;flex:1">
+      <div class="feat-heading">Core <span class="accent">Features</span></div>
+      <div class="feat-grid">
+
+        <!-- Feed -->
+        <div class="feat-card green-accent span2">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="feat-card-icon">📋</div>
+              <div class="feat-card-name" style="margin-top:8px">COMMUNITY FEED</div>
+              <div class="feat-card-desc" style="max-width:280px">Broadcast emergency alerts, safe routes, medical info, shelter locations. Every message has a TTL and expires automatically.</div>
+              <div class="feat-pill pill-green" style="margin-top:8px">✓ Multi-type messages</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+              <div style="background:rgba(196,26,26,0.1);border:1px solid rgba(196,26,26,0.2);border-radius:6px;padding:6px 10px;font-size:0.6rem;letter-spacing:0.1em;color:rgba(255,255,255,0.5)">🚨 EMERGENCY</div>
+              <div style="background:rgba(240,165,0,0.08);border:1px solid rgba(240,165,0,0.2);border-radius:6px;padding:6px 10px;font-size:0.6rem;letter-spacing:0.1em;color:rgba(255,255,255,0.5)">⚠️ ALERT</div>
+              <div style="background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.15);border-radius:6px;padding:6px 10px;font-size:0.6rem;letter-spacing:0.1em;color:rgba(255,255,255,0.5)">✅ SAFE ROUTE</div>
+              <div style="background:rgba(59,125,232,0.08);border:1px solid rgba(59,125,232,0.15);border-radius:6px;padding:6px 10px;font-size:0.6rem;letter-spacing:0.1em;color:rgba(255,255,255,0.5)">ℹ️ INFO</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Connect -->
+        <div class="feat-card red-accent">
+          <div class="feat-card-icon">📡</div>
+          <div class="feat-card-name">QR CONNECT</div>
+          <div class="feat-card-desc">Pair devices with zero network via QR code WebRTC handshake.</div>
+          <div class="feat-pill pill-red">No Server Required</div>
+        </div>
+
+        <!-- Map -->
+        <div class="feat-card green-accent">
+          <div class="feat-card-icon">🗺️</div>
+          <div class="feat-card-name">OFFLINE MAP</div>
+          <div class="feat-card-desc">Pin locations, hazards & shelters. Share routes via QR or peer sync.</div>
+          <div class="feat-pill pill-green">100% Offline</div>
+        </div>
+
+        <!-- SOS -->
+        <div class="feat-card red-accent" style="position:relative">
+          <div class="feat-card-icon">🆘</div>
+          <div class="feat-card-name">SOS BROADCAST</div>
+          <div class="feat-card-desc">Hold-to-activate emergency broadcast. Propagates instantly to all connected peers.</div>
+          <div class="sos-big-btn">SOS</div>
+        </div>
+
+        <!-- DM -->
+        <div class="feat-card green-accent">
+          <div class="feat-card-icon">💬</div>
+          <div class="feat-card-name">ENCRYPTED DMs</div>
+          <div class="feat-card-desc">E2E encrypted 1-on-1 messaging + voice messages over WebRTC data channels.</div>
+          <div class="feat-pill pill-green">🔒 ECDH Encrypted</div>
+        </div>
+
+        <!-- QR Drop -->
+        <div class="feat-card amber-accent">
+          <div class="feat-card-icon">📷</div>
+          <div class="feat-card-name">QR DROP</div>
+          <div class="feat-card-desc">Export messages as QR. Receive by scanning. Works with zero network.</div>
+          <div class="feat-pill pill-amber">Camera Only</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 6 — TECH STACK
+══════════════════════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="grid-bg"></div>
+  <header class="slide-header">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="60,7 113,100 7,100" fill="rgba(196,26,26,0.07)" stroke="#c41a1a" stroke-width="2.8" stroke-linejoin="round"/>
+          <ellipse cx="60" cy="70" rx="14" ry="10" fill="none" stroke="#c41a1a" stroke-width="1.8"/>
+          <circle cx="60" cy="70" r="5.5" fill="#c41a1a"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-wordmark">TRINE<span>T</span>RA</div>
+        <div class="header-tag">ERROR 404</div>
+      </div>
+    </div>
+    <div class="slide-num">06 / 07 — TECH STACK</div>
+  </header>
+  <div class="slide-body">
+    <div class="tech-left">
+      <div class="tech-heading">Built With <span class="accent">Zero</span> Frameworks</div>
+      <div class="tech-philosophy">
+        No React. No Vue. No backend. No cloud.<br>
+        Pure browser APIs — because when the internet dies, your dependencies shouldn't matter.
+      </div>
+
+      <div class="tech-badges">
+        <div class="tech-badge"><span class="dot" style="--dot-color:#f7df1e"></span>Vanilla JavaScript</div>
+        <div class="tech-badge"><span class="dot" style="--dot-color:#646cff"></span>Vite + PWA</div>
+        <div class="tech-badge"><span class="dot" style="--dot-color:#c41a1a"></span>WebRTC</div>
+        <div class="tech-badge"><span class="dot" style="--dot-color:#00e676"></span>IndexedDB / idb</div>
+        <div class="tech-badge"><span class="dot" style="--dot-color:#f0a500"></span>BroadcastChannel</div>
+        <div class="tech-badge"><span class="dot" style="--dot-color:#3b7de8"></span>QRCode.js + jsQR</div>
+        <div class="tech-badge"><span class="dot" style="--dot-color:#1a8a2e"></span>Leaflet Maps</div>
+        <div class="tech-badge"><span class="dot" style="--dot-color:#9b59b6"></span>lz-string</div>
+        <div class="tech-badge"><span class="dot" style="--dot-color:#e67e22"></span>Workbox / SW</div>
+        <div class="tech-badge"><span class="dot" style="--dot-color:#c41a1a"></span>Web Crypto API</div>
+      </div>
+
+      <div class="no-fw-badge">
+        <span class="big">🚫</span>
+        <div>
+          <div style="font-size:0.75rem;font-weight:700;color:#f0f0f0">No frameworks. No backend. No cloud.</div>
+          <div style="font-size:0.68rem;color:rgba(255,255,255,0.4);margin-top:2px">Runs in any modern browser. Installs as a PWA. Works offline from day one.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tech-right">
+      <div class="tech-wheel">
+        <!-- Rings -->
+        <div class="wheel-ring wheel-ring-1"></div>
+        <div class="wheel-ring wheel-ring-2"></div>
+        <div class="wheel-ring wheel-ring-3"></div>
+
+        <!-- SVG connector lines -->
+        <svg class="wheel-svg" viewBox="0 0 320 320">
+          <line class="wline" x1="160" y1="160" x2="160" y2="50"/>
+          <line class="wline" x1="160" y1="160" x2="270" y2="160"/>
+          <line class="wline" x1="160" y1="160" x2="160" y2="270"/>
+          <line class="wline" x1="160" y1="160" x2="50" y2="160"/>
+          <line class="wline" x1="160" y1="160" x2="258" y2="62"/>
+          <line class="wline" x1="160" y1="160" x2="258" y2="258"/>
+          <line class="wline" x1="160" y1="160" x2="62" y2="258"/>
+          <line class="wline" x1="160" y1="160" x2="62" y2="62"/>
+        </svg>
+
+        <!-- Center -->
+        <div class="wheel-center">TRINETRA<br>CORE</div>
+
+        <!-- Items around the wheel -->
+        <div class="wheel-item" style="left:160px;top:50px">
+          <div class="wheel-item-icon">🌐</div>
+          <div class="wheel-item-label">WebRTC</div>
+        </div>
+        <div class="wheel-item" style="left:270px;top:160px">
+          <div class="wheel-item-icon">💾</div>
+          <div class="wheel-item-label">IndexedDB</div>
+        </div>
+        <div class="wheel-item" style="left:160px;top:270px">
+          <div class="wheel-item-icon">📷</div>
+          <div class="wheel-item-label">jsQR</div>
+        </div>
+        <div class="wheel-item" style="left:50px;top:160px">
+          <div class="wheel-item-icon">🗺️</div>
+          <div class="wheel-item-label">Leaflet</div>
+        </div>
+        <div class="wheel-item" style="left:258px;top:62px">
+          <div class="wheel-item-icon">🔒</div>
+          <div class="wheel-item-label">Crypto API</div>
+        </div>
+        <div class="wheel-item" style="left:258px;top:258px">
+          <div class="wheel-item-icon">📦</div>
+          <div class="wheel-item-label">lz-string</div>
+        </div>
+        <div class="wheel-item" style="left:62px;top:258px">
+          <div class="wheel-item-icon">📻</div>
+          <div class="wheel-item-label">BroadcastCh</div>
+        </div>
+        <div class="wheel-item" style="left:62px;top:62px">
+          <div class="wheel-item-icon">⚡</div>
+          <div class="wheel-item-label">Vite PWA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 7 — FUTURE ENHANCEMENTS
+══════════════════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="grid-bg"></div>
+  <header class="slide-header">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="60,7 113,100 7,100" fill="rgba(196,26,26,0.07)" stroke="#c41a1a" stroke-width="2.8" stroke-linejoin="round"/>
+          <ellipse cx="60" cy="70" rx="14" ry="10" fill="none" stroke="#c41a1a" stroke-width="1.8"/>
+          <circle cx="60" cy="70" r="5.5" fill="#c41a1a"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-wordmark">TRINE<span>T</span>RA</div>
+        <div class="header-tag">ERROR 404</div>
+      </div>
+    </div>
+    <div class="slide-num">07 / 07 — FUTURE ENHANCEMENTS</div>
+  </header>
+  <div class="slide-body">
+    <div style="padding:20px 48px 24px;width:100%;display:flex;flex-direction:column;gap:16px;flex:1">
+      <div class="future-heading">What's <span class="accent">Next</span> for TRINETRA</div>
+      <div class="future-grid">
+
+        <div class="future-card c1">
+          <div class="future-icon">🔵</div>
+          <div class="future-content">
+            <div class="future-title">Bluetooth Transport</div>
+            <div class="future-desc">Web Bluetooth / Web Serial for true proximity pairing — no Wi-Fi network required at all. Devices become fully independent nodes.</div>
+            <div class="future-status"><span class="future-dot"></span>PLANNED</div>
+          </div>
+        </div>
+
+        <div class="future-card c2">
+          <div class="future-icon">✍️</div>
+          <div class="future-content">
+            <div class="future-title">Message Signing</div>
+            <div class="future-desc">Per-identity keypairs stored in IndexedDB. Recipients can cryptographically verify who authored a message without any central CA.</div>
+            <div class="future-status"><span class="future-dot"></span>IN DESIGN</div>
+          </div>
+        </div>
+
+        <div class="future-card c3">
+          <div class="future-icon">🕸️</div>
+          <div class="future-content">
+            <div class="future-title">Auto-Discovery Mesh</div>
+            <div class="future-desc">BroadcastChannel-based peer discovery with an automatic routing table. The mesh grows without manual QR pairing for every device pair.</div>
+            <div class="future-status"><span class="future-dot"></span>RESEARCHING</div>
+          </div>
+        </div>
+
+        <div class="future-card c4">
+          <div class="future-icon">📦</div>
+          <div class="future-content">
+            <div class="future-title">Smarter Compression</div>
+            <div class="future-desc">Field-level compression for sync payloads, larger QR capacity, and delta-sync to only transmit changed fields across the mesh.</div>
+            <div class="future-status"><span class="future-dot"></span>BACKLOG</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="future-bottom">
+        <div class="future-strap">TRINETRA · SEE BEYOND THE BLACKOUT · ERROR 404</div>
+        <div class="future-logo-small">
+          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="60,7 113,100 7,100" fill="rgba(196,26,26,0.07)" stroke="#c41a1a" stroke-width="2.8" stroke-linejoin="round"/>
+            <ellipse cx="60" cy="70" rx="14" ry="10" fill="none" stroke="#c41a1a" stroke-width="1.8"/>
+            <circle cx="60" cy="70" r="5.5" fill="#c41a1a"/>
+          </svg>
+          <span>TRINETRA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- Navigation -->
+<div class="nav-controls">
+  <button class="nav-btn" id="btn-prev" disabled>&#8592;</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <button class="nav-btn" id="btn-next">&#8594;</button>
+</div>
+<div class="nav-hint">← → ARROW KEYS TO NAVIGATE</div>
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const dotsEl = document.getElementById('nav-dots');
+let current = 0;
+
+// Build dots
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  d.addEventListener('click', () => goTo(i));
+  dotsEl.appendChild(d);
+});
+
+function goTo(n) {
+  if (n < 0 || n >= slides.length) return;
+  slides[current].classList.remove('active');
+  slides[current].classList.add('exit-left');
+  setTimeout(() => slides[current > n ? current : current].classList.remove('exit-left'), 600);
+
+  current = n;
+  slides.forEach((s, i) => {
+    s.classList.toggle('active', i === n);
+    if (i !== n) s.classList.remove('exit-left');
+  });
+
+  document.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === n));
+  document.getElementById('btn-prev').disabled = n === 0;
+  document.getElementById('btn-next').disabled = n === slides.length - 1;
+}
+
+document.getElementById('btn-prev').addEventListener('click', () => goTo(current - 1));
+document.getElementById('btn-next').addEventListener('click', () => goTo(current + 1));
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+});
+</script>
+</body>
+</html>

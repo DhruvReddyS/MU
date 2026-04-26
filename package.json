@@ -1,0 +1,25 @@
+{
+  "name": "trinetra",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:host": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview",
+    "preview:host": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "idb": "^8.0.3",
+    "jsqr": "^1.4.0",
+    "leaflet": "^1.9.4",
+    "lz-string": "^1.5.0",
+    "qrcode": "^1.5.4",
+    "vite": "^5.4.21",
+    "vite-plugin-pwa": "^1.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^1.2.0"
+  }
+}
